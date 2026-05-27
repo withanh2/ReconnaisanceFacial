@@ -79,7 +79,13 @@ public class ACP {
     //------------------------------------------------------------------------------------------------------------
 
 
-    public static double[][] calculer_ValeurPropre(SimpleMatrix matrice){
+
+    
+
+
+    
+
+    public static double[] calculer_ValeurPropre(SimpleMatrix matrice){
 
         var decomposition = matrice.eig();
 
@@ -93,14 +99,6 @@ public class ACP {
     return valeurPropre;
     }
 
-
-
-
-
-
-
-
-    
 
     
 }
