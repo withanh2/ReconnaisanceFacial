@@ -95,14 +95,14 @@ public class Image{
     //------- TEST POUR VERIFIER  -------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
 
-    public static void main(String[] args){
-        Image img = new Image("donnee/reference/personne_01/1.pgm");
+   // public static void main(String[] args){
+        //Image img = new Image("donnee/reference/personne_01/1.pgm");
 
-        System.out.println("Chemin : " + img.getChemin());
-        System.out.println("ID Personne : " + img.getIdPersonne());
-        System.out.println("ID Image : " + img.getIdImage());
-        System.out.println("Taille matrice : " + img.getMatrix().getNumRows() + " x " + img.getMatrix().getNumCols());
-        img.getMatrix().print();
-    }
+        //System.out.println("Chemin : " + img.getChemin());
+        //System.out.println("ID Personne : " + img.getIdPersonne());
+        //System.out.println("ID Image : " + img.getIdImage());
+        //System.out.println("Taille matrice : " + img.getMatrix().getNumRows() + " x " + img.getMatrix().getNumCols());
+        //img.getMatrix().print();
+    //}
 
 }

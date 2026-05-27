@@ -1,6 +1,6 @@
 
 import java.util.Arrays;
-import org.ejml.simple.SimpleMatrix;  // Module
+import org.ejml.simple.SimpleMatrix;  // Module qui permet de creer de matrice 
 
 public class ACP {
     
@@ -30,10 +30,7 @@ public class ACP {
         this.valeurPropre = null;
         this.vecteurPropre = null;
 
-
     }
-
-
 
 
     //------------------------------------------------------------------------------------------------------------
@@ -84,8 +81,16 @@ public class ACP {
 
     public static double[][] calculer_ValeurPropre(SimpleMatrix matrice){
 
+        var decomposition = matrice.eig();
 
+        int taille = matrice.numRows();
+        double[] valeurPropre = new double[taille];
 
+        for (int i=0; i<taille; i++){
+            valeurPropre[i] = decomposition.getEigenvalue(i).getReal();
+        }
+
+    return valeurPropre;
     }
 
 
