@@ -1,6 +1,5 @@
 # Donnees images (trop lourd)
 donnee/
-donnee.zip
 
 # Fichiers compiles Java
 *.class
