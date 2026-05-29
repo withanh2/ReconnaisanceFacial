@@ -11,7 +11,8 @@ import java.io.IOException;
 
 public class PreTraitement {
 
-	int tailleCible;
+	int longueurCible;
+	int hauteurCible;
 	boolean estNivGris;
 	
 	/*
@@ -19,13 +20,18 @@ public class PreTraitement {
 	 * @param int n la taille de la matrice carrée standard dans notre BDD, boolean gris indicateur de si on veut une image en niv de gris ou non.
 	 * @brief Constructeur d'un prétraitement pour les images externes avant de les comparer avec celles de la BDD.
 	 */
-	public PreTraitement(int n, boolean gris){
-		this.tailleCible = n;
+	public PreTraitement(int longueur,int haut, boolean gris){
+		this.longueurCible = longueur;
+		this.hauteurCible = haut;
 		this.estNivGris = gris;
 	}
 	
+	public PreTraitement(int n, int m) {
+		this(n,m,true);
+	}
+	
 	public PreTraitement(int n) {
-		this(n,true);
+		this(n,n,true);
 	}
 	
 	/*
@@ -33,8 +39,17 @@ public class PreTraitement {
 	 * @return int tailleCible du pré-traitement manipulé.
 	 * @brief Accesseur de la taille cible d'un prétraitement
 	 */
-	public int getTailleCible() {
-		return(this.tailleCible);
+	public int getLongueurCible() {
+		return(this.longueurCible);
+	}
+	
+	/*
+	 * @author Maxime Le Glanaër
+	 * @return int tailleCible du pré-traitement manipulé.
+	 * @brief Accesseur de la taille cible d'un prétraitement
+	 */
+	public int getHauteurCible() {
+		return(this.hauteurCible);
 	}
 	
 	/*
@@ -56,8 +71,8 @@ public class PreTraitement {
 	        throw new IllegalArgumentException("Image non chargée (fichier introuvable ou format non supporté).");
 	    }
 
-	    if (img.getWidth() != this.getTailleCible() || img.getHeight() != this.getTailleCible()) {
-	        throw new IllegalArgumentException("Dimensions incorrectes : attendu " + this.getTailleCible() + "×" + this.getTailleCible() + ", reçu " + img.getWidth() + "×" + img.getHeight());
+	    if (img.getWidth() != this.getLongueurCible() || img.getHeight() != this.getHauteurCible()) {
+	        throw new IllegalArgumentException("Dimensions incorrectes : attendu " + this.getLongueurCible() + "×" + this.getHauteurCible() + ", reçu " + img.getWidth() + "×" + img.getHeight());
 	    }
 	    if (this.getEstNivGris()){
 	    	for (int i = 0; i < img.getHeight(); i++) {
@@ -81,7 +96,7 @@ public class PreTraitement {
 	 * @brief Transforme l'image extérieure (matrice de pixels) supposée vérifiée en Image.
 	 */
 	public DMatrixRMaj transformer(BufferedImage img) {
-		DMatrixRMaj imgRep = new DMatrixRMaj(this.getTailleCible(), this.getTailleCible());
+		DMatrixRMaj imgRep = new DMatrixRMaj(this.getLongueurCible(), this.getHauteurCible());
 		for (int i = 0; i < img.getHeight(); i++) {
 	        for (int j = 0; j < img.getWidth(); j++) {
 	            int pixel = img.getRGB(i, j);
