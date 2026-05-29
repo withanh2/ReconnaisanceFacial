@@ -3,22 +3,38 @@ package CodeDiagramme;
 import java.util.List;
 
 public class Application {
+	/*Liste des visages de référence utilisés pour l'entraînement et la reconnaissance*/
 	private Visages visagesRef;
+	/*Liste des visages test utilisés pour évaluer les performances du système*/
 	private Visages visagesTest;
+	/*Objet ACP contient les eigenfaces et la base de visages de référence. 
+	 * Il est utilisé pour projeter les images dans l'espace*/
 	private ACP acp;
 	
+	/*Constructeur complet*/
 	public Application (Visages visagesRef, Visages visagesTest, ACP acp) {
 		this.visagesRef = visagesRef;
 		this.visagesTest = visagesTest;
 		this.acp = acp;
 	}
 	
+	/**
+	 * Fais le processus complet de reconnaissance faciale pour une image donée.
+	 * Affiche le résultat et retourne l'image de référence la plus proche.
+	 * @param img Image brute contenant le visage à identifier
+	 * @return L'image de référence la plus proche du visage testé.
+	 */
 	public Image identifierVisage(Image img) {
-		Pretraitement pt = new PreTraitement();
+		/*création d'un objet de prétraitement*/
+		Pretraitement pt = new PreTraitement(); 
+		/*application du prétraitement*/
 		Image imgTraitee = pt.traiter(img);
+		/*création de l'identificateur en passant l'acp*/
 		Identificateur id = new Identificateur(acp);
+		/*compare l'image à toute la base de référence*/
 		Resultat r = id.identifier(imgTraitee);
-		if (r.isReconnu()) {
+		/*Boucle qui affiche le résultat selon le visage reconnu ou non*/
+		if (r.isReconnu()) { 
 			System.out.println("Visage reconnu : " + r.getIdPersoReco());
 			System.out.println("Distance : " + r.getDistanceMin());
 		} else {
@@ -26,6 +42,7 @@ public class Application {
 			System.out.println("Distance : " + r.getDistanceMin());
 		}
 		Image imageReconnue = r.getImgPlusProche();
+		/*retourne l'image la plus proche du Resultat*/
 		return imageReconnue;
 	}
 	
