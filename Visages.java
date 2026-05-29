@@ -9,7 +9,7 @@ public class Visages{
 
     private List<Image> images;
     private SimpleMatrix matrixVecteur;
-    private SimpleMatrix matrixCovariance;
+    private SimpleMatrix matrixD;
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
@@ -18,7 +18,7 @@ public class Visages{
     public Visages(List<Image> images){
         this.images = images;
         this.matrixVecteur = creerMatrixVecteur();
-        this.matrixCovariance = calculerMatriceCovarianceReduite();
+        this.matrixD = calculerMatriceCovarianceReduite();
     }
 
     //------------------------------------------------------------------------------------------------------------
@@ -73,8 +73,8 @@ public class Visages{
 
     public SimpleMatrix calculerMatriceCovarianceReduite(){
         SimpleMatrix A = centrerMatrice();
-        this.matrixCovariance = A.transpose().mult(A);
-        return matrixCovariance;
+        this.matrixD = A.transpose().mult(A);
+        return matrixD;
     }
 
     //------------------------------------------------------------------------------------------------------------
