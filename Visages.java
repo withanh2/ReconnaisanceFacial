@@ -73,8 +73,7 @@ public class Visages{
 
     public SimpleMatrix calculerMatriceCovarianceReduite(){
         SimpleMatrix A = centrerMatrice();
-        int M = A.getNumCols();
-        this.matrixCovariance = A.transpose().mult(A).scale(1.0 / M);
+        this.matrixCovariance = A.transpose().mult(A);
         return matrixCovariance;
     }
 
