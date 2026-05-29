@@ -24,11 +24,12 @@ public class Application {
 	 * @param img Image brute contenant le visage à identifier
 	 * @return L'image de référence la plus proche du visage testé.
 	 */
-	public Image identifierVisage(Image img) {
+	public Image identifierVisage(BufferedImage img) {
 		/*création d'un objet de prétraitement*/
-		Pretraitement pt = new PreTraitement(); 
+		Pretraitement pt = new PreTraitement(92,112); 
 		/*application du prétraitement*/
-		Image imgTraitee = pt.traiter(img);
+		pt.verifierConformite(img);
+		Image imgTraitee = pt.transformer(img);
 		/*création de l'identificateur en passant l'acp*/
 		Identificateur id = new Identificateur(acp);
 		/*compare l'image à toute la base de référence*/
