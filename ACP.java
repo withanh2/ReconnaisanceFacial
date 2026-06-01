@@ -138,19 +138,19 @@ public class ACP {
 
 
     /**
-	 * @author Jules Turchi
-     * @param matrice matrice d'entier 
+	 * @author Jules Turchi et Nathan Havard
+     * @param matrixVecteur matrice d'entier 
      * @return une ListePropre qui contient la liste des valeurs propres et vecteurs propres
 	 * @brief Fonction qui récupère la liste des vecteurs propres et vecteurs propres, classe les valeurs propres 
      * et vecteurs propres associées par ordre croissant puis les ajoute dans un nouvel élément de la classe ListePropre	 
     */
-    public static ListePropre calculer_ValeurPropre(SimpleMatrix matrice){
+    public static ListePropre calculer_ValeurPropre(SimpleMatrix matrixVecteur){
 
-        SimpleEVD<SimpleMatrix> decomposition = matrice.eig(); //Récupère des listes contenants les valeurs propres et les vecteur propre associé
+        SimpleEVD<SimpleMatrix> decomposition = matrixVecteur.eig(); //Récupère des listes contenants les valeurs propres et les vecteur propre associé
 
         System.out.println(decomposition);
 
-        int taille = matrice.numRows();
+        int taille = matrixVecteur.numRows();
 
         // On récupère les valeurs propres et les vecteurs propres
 
@@ -236,15 +236,15 @@ public class ACP {
 
     /**
 	 * @author Jules Turchi
-	 * @param matrice tableau contenant les valeurs propres dans l'odre décroissant
+	 * @param matrixA tableau contenant les valeurs propres dans l'odre décroissant
      * @param nb_vp nb de valeur propre gardéees ie nb de d'eigenfaces à calculer 
 	 * @param listepropre valeurs et vecteurs propre de A^T*A triées par ordre décroissant 
      * @return un liste de double[] qui contient les eigenfaces
 	 * @brief Fonction qui calcule et normalise les vecteurs propres
 	 */
-    public static ArrayList<Double> calculer_eigenface(SimpleMatrix A, int nb_vp , ListePropre listepropre ){
+    public static double[][] calculer_eigenface(SimpleMatrix matrixA, int nb_vp , ListePropre listepropre ){
 
-        int taille = A.numRows(); // Taille de la matrice A 
+        int taille = matrixA.numRows(); // Taille de la matrice A 
 
         double[][] tab_eigenface = new double[taille][nb_vp];
     
@@ -293,6 +293,38 @@ public class ACP {
     }
 
 
+
+
+
+    /**
+	 * @author Jules Turchi
+	 * @param tab_eigenface tableau contenant les eigenfaces
+     * @param  image vecteur contenant les pixel d'une image 
+	 * @param visage_moyen moyenne des pixels 
+     * @return un liste de double[] qui contient les eigenfaces
+	 * @brief Fonction qui calcule et normalise les vecteurs propres
+	*/
+    public static double[] projection(double[] tab_eigenface, double[] image, double[] visage_moyen){
+
+
+        int nb_eigenface = tab_eigenface.length;
+        int taille_img =  image.length;
+
+
+        // Création d'un nouveau vecteur contenant l'image centrée
+        double[] img_centree = new double [taille_img];
+        for (int i=0; i<taille_img ; i++){
+
+            img_centree[i] = image[i] - visage_moyen[i]; 
+
+        }
+
+
+        // Projection 
+
+
+
+}
 
 
 
