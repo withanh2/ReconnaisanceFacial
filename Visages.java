@@ -2,7 +2,7 @@ import org.ejml.simple.SimpleMatrix;
 import java.util.List;
 import java.util.ArrayList;
 
-/*
+/** 
  * @author Nathan HAVARD
  * @brief Représente un ensemble de visages (images de référence) et fournit les opérations de l'ACP : construction de la matrice des vecteurs, calcul du visage moyen, centrage et matrice de covariance.
  */
@@ -19,7 +19,7 @@ public class Visages{
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param List<Image> images liste des images de référence à utiliser
      * @brief Constructeur de Visages. Initialise la matrice des images en vecteurs et la matrice de covariance réduite.
@@ -34,7 +34,7 @@ public class Visages{
     //------- FONCTION -------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return SimpleMatrix matrice (nbPixels x nbImages) où chaque colonne est le vecteur d'une image
      * @brief Construit la matrice contenant toutes les images sous forme de vecteurs, une image par colonne.
@@ -54,7 +54,7 @@ public class Visages{
         return matrice;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return SimpleMatrix vecteur colonne (nbPixels x 1) contenant la moyenne de chaque pixel sur l'ensemble des images
      * @brief Calcule le visage moyen : pour chaque pixel, fait la moyenne de sa valeur sur toutes les images.
@@ -75,7 +75,7 @@ public class Visages{
         return moyen;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return SimpleMatrix matrice (nbPixels x nbImages) où chaque colonne est une image centrée
      * @brief Centre la matrice des images en soustrayant le visage moyen à chaque colonne.
@@ -95,7 +95,7 @@ public class Visages{
         return centree;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return SimpleMatrix matrice de covariance réduite (nbImages x nbImages) calculée comme A^T * A où A est la matrice centrée
      * @brief Calcule la matrice de covariance réduite utilisée pour l'ACP. Stocke le résultat dans matrixD.

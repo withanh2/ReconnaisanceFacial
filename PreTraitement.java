@@ -15,7 +15,7 @@ public class PreTraitement {
 	int hauteurCible;
 	boolean estNivGris;
 	
-	/*
+	/** 
 	 * @author Maxime Le Glanaër
 	 * @param int n la taille de la matrice carrée standard dans notre BDD, boolean gris indicateur de si on veut une image en niv de gris ou non.
 	 * @brief Constructeur d'un prétraitement pour les images externes avant de les comparer avec celles de la BDD.
@@ -34,7 +34,7 @@ public class PreTraitement {
 		this(n,n,true);
 	}
 	
-	/*
+	/** 
 	 * @author Maxime Le Glanaër
 	 * @return int tailleCible du pré-traitement manipulé.
 	 * @brief Accesseur de la taille cible d'un prétraitement
@@ -43,7 +43,7 @@ public class PreTraitement {
 		return(this.longueurCible);
 	}
 	
-	/*
+	/** 
 	 * @author Maxime Le Glanaër
 	 * @return int tailleCible du pré-traitement manipulé.
 	 * @brief Accesseur de la taille cible d'un prétraitement
@@ -52,7 +52,7 @@ public class PreTraitement {
 		return(this.hauteurCible);
 	}
 	
-	/*
+	/**
 	 * @author Maxime Le Glanaër
 	 * @return boolean estNivGris, si oui ou non l'image doit être grise
 	 * @brief Accesseur de estNivGris
@@ -61,7 +61,7 @@ public class PreTraitement {
 		return(this.estNivGris);
 	}
 	
-	/*
+	/** 
 	 * @author Maxime Le Glanaër
 	 * @param BufferedImage img l'image que l'on doit vérifier
 	 * @brief Vérifie si une image a la bonne taille selon le traitement manipulé et est en niveau de gris si nécessaire
@@ -89,7 +89,7 @@ public class PreTraitement {
 	    }
 	}
 	
-	/*
+	/** 
 	 * @author Maxime Le Glanaër
 	 * @param BufferedImage img l'image extérieure à transformer
 	 * @return Image imgRep l'image transformée

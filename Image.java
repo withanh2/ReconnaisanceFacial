@@ -1,7 +1,7 @@
 import org.ejml.simple.SimpleMatrix;
 import java.io.*;
 
-/*
+/** 
  * @author Nathan HAVARD
  * @brief Représente une image issue de la base de données, identifiée par sa personne, son numéro d'image, son chemin et la matrice de pixels associée.
  */
@@ -21,7 +21,7 @@ public class Image{
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param String chemin le chemin vers le fichier PGM de l'image
      * @brief Constructeur d'une Image à partir d'un chemin. Extrait automatiquement l'id de la personne (dossier parent), l'id de l'image (nom du fichier) et lit la matrice de pixels.
@@ -40,7 +40,7 @@ public class Image{
     //------------------------------------------------------------------------------------------------------------
 
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param String chemin le chemin vers le fichier PGM à lire
      * @return SimpleMatrix vecteur colonne (hauteur*largeur, 1) contenant les niveaux de gris de chaque pixel
@@ -74,7 +74,7 @@ public class Image{
     //------------------------------------------------------------------------------------------------------------
 
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return String idPersonne identifiant de la personne (nom du dossier parent)
      * @brief Accesseur de l'identifiant de la personne associée à l'image.
@@ -83,7 +83,7 @@ public class Image{
         return idPersonne;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param String idPersonne nouvel identifiant de la personne
      * @brief Modifie l'identifiant de la personne associée à l'image.
@@ -92,7 +92,7 @@ public class Image{
         this.idPersonne = idPersonne;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return String idImage identifiant de l'image (nom du fichier sans extension)
      * @brief Accesseur de l'identifiant de l'image.
@@ -101,7 +101,7 @@ public class Image{
         return idImage;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param String idImage nouvel identifiant de l'image
      * @brief Modifie l'identifiant de l'image.
@@ -110,7 +110,7 @@ public class Image{
         this.idImage = idImage;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return SimpleMatrix matrix vecteur colonne contenant les niveaux de gris des pixels de l'image
      * @brief Accesseur de la matrice de pixels.
@@ -119,7 +119,7 @@ public class Image{
         return matrix;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param SimpleMatrix matrix nouvelle matrice de pixels
      * @brief Modifie la matrice de pixels.
@@ -128,7 +128,7 @@ public class Image{
         this.matrix = matrix;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @return String chemin chemin du fichier image
      * @brief Accesseur du chemin du fichier image.
@@ -137,7 +137,7 @@ public class Image{
         return chemin;
     }
 
-    /*
+    /** 
      * @author Nathan HAVARD
      * @param String chemin nouveau chemin du fichier image
      * @brief Modifie le chemin du fichier image.
