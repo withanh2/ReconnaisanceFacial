@@ -14,6 +14,7 @@ public class Visages{
     private List<Image> images;
     private SimpleMatrix matrixVecteur;
     private SimpleMatrix matrixD;
+    private SimpleMatrix matrixA;
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
@@ -22,12 +23,13 @@ public class Visages{
     /** 
      * @author Nathan HAVARD
      * @param List<Image> images liste des images de référence à utiliser
-     * @brief Constructeur de Visages. Initialise la matrice des images en vecteurs et la matrice de covariance réduite.
+     * @brief Constructeur de Visages. Initialise la matrice des images en vecteurs et la matrice de covariance réduite et la matrice A (matrice vecteur sans le visage moyen).
      */
     public Visages(List<Image> images){
         this.images = images;
         this.matrixVecteur = creerMatrixVecteur();
         this.matrixD = calculerMatriceCovarianceReduite();
+        this.matrixA = centrerMatrice();
     }
 
     //------------------------------------------------------------------------------------------------------------
