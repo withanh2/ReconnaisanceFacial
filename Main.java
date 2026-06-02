@@ -3,6 +3,7 @@ import org.ejml.simple.SimpleEVD;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.File;
 
 
 public class Main {
@@ -89,7 +90,7 @@ public class Main {
         double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
         
         // Affichage des resultats de l'ACP
-        System.out.println("\n\nOn analyser notre image de test");
+        System.out.println("\n\nOn analyser notre image choisi");
         System.out.println("Voici l'indice_min : " + res[0]);
         System.out.println("Voici la distance min : " + res[1]);
 
@@ -97,7 +98,7 @@ public class Main {
 
     	//------- Option affichage des valeurs propres -----------------------------------------------------------------------------
 
-    */
+    
 
         /*
 		ListePropre vp = calculer_ValeurPropre(matExemple);
@@ -128,15 +129,42 @@ public class Main {
     //------- FONCTION RECONNAISSANCE FACIALE ------------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------------
 	
+    /**
+    * @author Nathan Havard
+    * @param String du dossier avec les photo reference
+    * @return List<Image> la liste d'image des photos de ce dossier 
+    * @brief recupere toute les photos du dossier (.pgm) et les converti en classe Image
+    */
+    public static List<Image> chargerImages(String dossier){
+        List<Image> liste = new ArrayList<>();
+        File racine = new File(dossier);
+
+        File[] personnes = racine.listFiles(File::isDirectory);   // sous-dossiers = personnes
+        if (personnes == null){
+            throw new RuntimeException("Dossier introuvable : " + dossier);
+        }
+        Arrays.sort(personnes);  
+
+        for (File personne : personnes){
+            File[] fichiers = personne.listFiles((d, nom) -> nom.endsWith(".pgm"));
+            if (fichiers == null) continue;
+            Arrays.sort(fichiers);   // 1.pgm, 2.pgm, ...
+
+            for (File f : fichiers){
+                liste.add(new Image(f.getPath()));   // le constructeur lit le PGM + extrait les ids
+            }
+        }
+        return liste;
+    }
+
 
     /**
     * @author Jules Turchi et Nathan Havard
     * @param visages objet Visages contenant la matrice centrée A et la matrice de covariance réduite A^T*A
-    * @return double[] qui contient la liste des valeurs propres
     * @brief Constructeur de l'ACP. Calcule les valeurs/vecteurs propres de A^T*A, détermine le nombre
     * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (omega).
     */
-	public static Image reconnaissanceFaciale() {
+	public static void reconnaissanceFaciale() {
 		//------- Pré-traitement ---------------------------------------------------------------------------------
 		
         /*création d'un objet de prétraitement*/
@@ -151,34 +179,34 @@ public class Main {
 		
 		//------- Création Image depuis nos donnée -------------------------------------------------------------------
 
-
+        List<Image> liste = chargerImages("donnees/donnee/reference");
 
 		
 		//------- ACP -------------------------------------------------------------------------------------------
 
-
-		List<Image> liste = chargerImages("donnees/donnee/reference");
         Visages visages = new Visages(liste);
         ACP acp = new ACP(visages);
         
 
-    	//------- Calculer résultat -------------------------------------------------------------------------------------
-        SimpleMatrix matAanalyser1 = new SimpleMatrix(new double[][]{{10.0}, {9.0},{4.0}, {45.0}});
-        Image imageAanalyser = new Image(matAanalyser1);
+    	//------- Calculer résultat pour une image -----------------------------------------------------------------------------
+        Image imageAanalyser = new Image("donnees/donnee/test/connus/axel/9.pgm");
+        //Image imageAanalyser = new Image("donnees/donnee/test/inconnus/jeanne/1.pgm");
         Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
         double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
-        System.out.println("\n\nOn analyser notre image de test");
+        System.out.println("\nOn analyser notre image choisi");
         System.out.println("Voici l'indice_min : " + res[0]);
         System.out.println("Voici la distance min : " + res[1]);
-        
-        return 
+        int indice = (int) Math.round(res[0]);
+        Image imageReconnue = liste.get(indice);
+        System.out.println("Personne reconnue : " + imageReconnue.getIdPersonne());
 
     }
     
 	public static void main(String[] args){
 
         System.out.println("Bienvenue sur notre application de reconnaissance faciale !");
-
+        //reconnaissanceFaciale();
+        test();
 
 	}
     
