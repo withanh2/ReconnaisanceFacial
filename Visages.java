@@ -11,9 +11,14 @@ public class Visages{
     //------- DEFINITION DES VARIABLES ---------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------
 
-    protected List<Image> images;
-    protected SimpleMatrix matrixVecteur;
-    protected SimpleMatrix matrixD;
+    private List<Image> images;
+    private SimpleMatrix matrixVecteur;
+    private SimpleMatrix matrixD;
+    private SimpleMatrix matrixA;
+
+    private Image image;
+    private SimpleMatrix imageAanalyser;
+
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
@@ -28,7 +33,15 @@ public class Visages{
         this.images = images;
         this.matrixVecteur = creerMatrixVecteur();
         this.matrixD = calculerMatriceCovarianceReduite();
+        this.matrixA = centrerMatrice();
     }
+
+    public Visages(Image image){
+        this.image = image;
+        this.matrixVecteur = creerMatrixVecteur();
+        this.imageAanalyser = centrerMatrice();
+    }
+
 
     //------------------------------------------------------------------------------------------------------------
     //------- FONCTION -------------------------------------------------------------------------------------------
@@ -162,6 +175,60 @@ public class Visages{
      */
     public void setMatrixD(SimpleMatrix matrixD){
         this.matrixD = matrixD;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice centrée (matrice A)
+     * @brief Retourne la matrice centrée.
+     */
+    public SimpleMatrix getMatrixA(){
+        return matrixA;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param matrixA matrice centrée (matrice A)
+     * @brief Modifie la matrice centrée.
+     */
+    public void setMatrixA(SimpleMatrix matrixA){
+        this.matrixA = matrixA;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return Image image à analyser
+     * @brief Retourne l'image à analyser.
+     */
+    public Image getImage(){
+        return image;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param image image à analyser
+     * @brief Modifie l'image à analyser.
+     */
+    public void setImage(Image image){
+        this.image = image;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix vecteur de l'image à analyser, centré sur le visage moyen
+     * @brief Retourne l'image à analyser centrée.
+     */
+    public SimpleMatrix getImageAanalyser(){
+        return imageAanalyser;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param imageAanalyser vecteur de l'image à analyser, centré sur le visage moyen
+     * @brief Modifie l'image à analyser centrée.
+     */
+    public void setImageAanalyser(SimpleMatrix imageAanalyser){
+        this.imageAanalyser = imageAanalyser;
     }
 
     //------------------------------------------------------------------------------------------------------------
