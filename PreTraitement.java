@@ -87,13 +87,14 @@ public class PreTraitement {
 	    if (img == null) {
 	        throw new IllegalArgumentException("Image non chargée (fichier introuvable ou format non supporté).");
 	    }
-
-	    if (img.getWidth() != this.getLongueurCible() || img.getHeight() != this.getHauteurCible()) {
+		int hauteur = img.length;
+		int largeur  = img[0].length;
+	    if (largeur != this.getLongueurCible() || hauteur != this.getHauteurCible()) {
 	        throw new IllegalArgumentException("Dimensions incorrectes : attendu " + this.getLongueurCible() + "×" + this.getHauteurCible() + ", reçu " + img.getWidth() + "×" + img.getHeight());
 	    }
 	    if (this.getEstNivGris()){
-	    	for (int i = 0; i < img.getHeight(); i++) {
-		        for (int j = 0; j < img.getWidth(); j++) {
+	    	for (int i = 0; i < hauteur; i++) {
+		        for (int j = 0; j < largeur; j++) {
 		            int pixel = img.getRGB(i, j);
 		            int r = (pixel >> 16) & 0xFF;
 		            int g = (pixel >> 8) & 0xFF;
