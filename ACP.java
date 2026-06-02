@@ -5,6 +5,21 @@ import java.util.Arrays;
 import org.ejml.simple.SimpleEVD;
 import org.ejml.simple.SimpleMatrix;  // Module qui permet de creer de matrice 
 
+
+
+
+
+
+    
+
+
+/**
+* @author Jules Turchi et Nathan Havard
+* @date 2026
+* @brief ACP est une classe qui permet de l'Analyse en Composante Principale. Elle permet grace à la matrice des images et au
+* calcul des valeurs propres et des eigenfaces de faire une projection afin de trouver l'image la plus proche de l'image étudiée
+*/
+
 public class ACP {
     
 
@@ -13,52 +28,55 @@ public class ACP {
     //------------------------------------------------------------------------------------------------------------
 
     private Visages visages;
-
-    private double[][] valeurPropre;
-
-    private double[][] vecteurPropre;
-
-    private int nb_vecteurPropre;
-
+    private double[][] tab_eigenface;
+    private int nb_valeurPropre;
+    private double[][] alpha;
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
 
 
+    /**
+     * @author Jules Turchi et Nathan Havard
+     * @param visages objet Visages contenant la matrice centrée A et la matrice de covariance réduite A^T*A
+     * @brief Constructeur de l'ACP. Calcule les valeurs/vecteurs propres de A^T*A, détermine le nombre
+     * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (alpha).
+     */
     public ACP(Visages visages){
 
         this.visages = visages;
-        this.nb_vecteurPropre = 0;
-        this.valeurPropre = null;
-        this.vecteurPropre = null;
 
+        // Décomposition de la matrice de covariance réduite (A^T*A) en valeurs et vecteurs propres triés
+        ListePropre listepropre = calculer_ValeurPropre(visages.getMatrixD());
+
+        // Nombre de valeurs propres à garder pour atteindre le seuil de représentation
+        this.nb_valeurPropre = nb_vp_a_garder(listepropre.valeurPropre_Trie).size();
+
+        // Calcul des eigenfaces puis des signatures (projections) de la base
+        this.tab_eigenface = calculer_eigenface(visages.getMatrixA(), nb_valeurPropre, listepropre);
+        this.alpha = projection(visages.getMatrixA(), tab_eigenface, nb_valeurPropre);
     }
-
-    public ACP(Visages visages, int nb_vecteurPropre){
-        this.visages = visages;
-        this.nb_vecteurPropre = nb_vecteurPropre;
-        this.valeurPropre = null;
-        this.vecteurPropre = null;
-    }
-
 
     //------------------------------------------------------------------------------------------------------------
     //------- GETTER --------------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
 
 
-    public double[][] getValeurPropre(){
-        return valeurPropre;
+    public Visages getVisages(){
+        return visages;
     }
 
-    public double[][] getVecteurPropre(){
-        return vecteurPropre;
+    public double[][] getTab_eigenface(){
+        return tab_eigenface;
     }
 
+    public int getNb_valeurPropre(){
+        return nb_valeurPropre;
+    }
 
-     public int getNb_vecteurPropre(){
-        return nb_vecteurPropre;
+    public double[][] getAlpha(){
+        return alpha;
     }
 
 
@@ -68,17 +86,46 @@ public class ACP {
     //------------------------------------------------------------------------------------------------------------
 
 
-    public void setValeurPropre( double[][] valeurPropre){
-        this.valeurPropre = valeurPropre;
+
+
+    /**
+	 * @author Jules Turchi
+	 * @param visages objet Visages contenant les images de la base
+	 * @brief Fonction qui met à jour les visages
+	 */
+    public void setVisages(Visages visages){
+        this.visages = visages;
     }
 
-    public void setVecteurPropre(double[][] vecteurPropre){
-        this.vecteurPropre = vecteurPropre;
+
+    /**
+	 * @author Jules Turchi
+	 * @param tab_eigenface tableau contenant les eigenfaces
+	 * @brief Fonction qui met à jour le tableau des eigenfaces
+	 */
+    public void setTab_eigenface(double[][] tab_eigenface){
+        this.tab_eigenface = tab_eigenface;
     }
 
 
-     public void setNb_vecteurPropre(int nb_vecteurPropre){
-        this.nb_vecteurPropre = nb_vecteurPropre;
+
+    /**
+	 * @author Jules Turchi
+	 * @param nb_valeurPropre entier qui correspond au nombre de valeurs propres
+	 * @brief Fonction qui met à jour le nombre de valeurs propres
+	 */
+    public void setNb_valeurPropre(int nb_valeurPropre){
+        this.nb_valeurPropre = nb_valeurPropre;
+    }
+
+
+    /**
+	 * @author Jules Turchi
+	 * @param alpha tableau contenant les projections des images
+	 * @brief Fonction qui met à jour les projections (alpha)
+	 */
+    public void setAlpha(double[][] alpha){
+        this.alpha = alpha;
     }
 
 
@@ -259,7 +306,7 @@ public class ACP {
 
             double lambda = listepropre.valeurPropre_Trie[i];  // On récupère la valeur propre
 
-            double X_h = listepropre.vecteurPropre_Trie[i]; // On recupère un vecteur propre
+            double[] X_h = listepropre.vecteurPropre_Trie[i]; // On recupère un vecteur propre
             
 
             // On met ce vecteur sous la forme d'un double sous la forme d'une matrice colonne
@@ -271,7 +318,7 @@ public class ACP {
 
             }
 
-            SimpleMatrix V_h = A.mult(X_h_mat);  // Calcul de A*X_h
+            SimpleMatrix V_h = matrixA.mult(X_h_mat);  // Calcul de A*X_h
 
 
 
@@ -282,7 +329,7 @@ public class ACP {
 
             for (int j=0; j< taille ; j++){
 
-                tab_eigenface[j][i] = X_h_mat.get(i,0) / norme;
+                tab_eigenface[j][i] = V_h.get(i,0) / norme;
             }
         }
 
@@ -299,32 +346,104 @@ public class ACP {
     /**
 	 * @author Jules Turchi
 	 * @param tab_eigenface tableau contenant les eigenfaces
-     * @param  image vecteur contenant les pixel d'une image 
-	 * @param visage_moyen moyenne des pixels 
-     * @return un liste de double[] qui contient les eigenfaces
-	 * @brief Fonction qui calcule et normalise les vecteurs propres
+     * @param  matrixA matrice centrée A
+	 * @param nb_eigenface nombre d'eigenfaces 
+     * @return un liste de double[] qui contient les projections
+	 * @brief Fonction qui calcule les projections des eigenfaces
 	*/
-    public static double[] projection(double[] tab_eigenface, double[] image, double[] visage_moyen){
+    public static double[][] projection(SimpleMatrix matrixA, double[][] tab_eigenface, int nb_eigenface){
 
 
-        int nb_eigenface = tab_eigenface.length;
-        int taille_img =  image.length;
+        int nb_img = matrixA.numCols(); // Nombre d'image dans la matrice
+        int nb_pxImg =  matrixA.numRows(); // Nombre de pixel par image dans la matrice
 
 
-        // Création d'un nouveau vecteur contenant l'image centrée
-        double[] img_centree = new double [taille_img];
-        for (int i=0; i<taille_img ; i++){
+        double[][] alpha = new double[nb_eigenface][nb_img];
 
-            img_centree[i] = image[i] - visage_moyen[i]; 
 
+        for( int i=0 ; i<nb_img ; i++){
+
+            for( int j=0 ; j<nb_eigenface ; j++){
+
+                double prod_scal = 0.0;
+
+                for( int k=0 ; k<nb_pxImg ; k++){
+
+                    prod_scal = prod_scal + tab_eigenface[k][j] * matrixA.get(k,i);
+
+                }
+                alpha[j][i] = prod_scal;
+            }
+        }
+        return alpha;
+    }
+
+
+
+
+
+
+
+
+    /**
+	 * @author Jules Turchi
+     * @param image image déjà traitée ie sous forme de vecteur et centrée 
+	 * @param tab_eigenface tableau contenant les eigenfaces
+     * @param  tab_signature tableau de double contenant les signatures
+	 * @param nb_eigenface nombre d'eigenfaces 
+     * @return un liste de double[] qui contient les projections
+	 * @brief Fonction qui projete l'image étudiée et qui retourne l'image la plus proche
+	*/
+    public static int identification(double[][] tab_signature, SimpleMatrix image, double[][] tab_eigenface, int nb_eigenface){
+
+        // On récupère la dimension de l'image
+        int nb_col = image.numCols(); // Nombre d'image dans la matrice
+        int nb_ligne =  image.numRows(); // Nombre de pixel par image dans la matrice
+
+        // On récupère les infos sur les signatures
+        int nb_image_base = tab_signature[0].length;
+
+
+        // Projection de l'image
+        double[][] signature_img = projection(image,tab_eigenface,nb_eigenface);
+
+        
+        
+        // Calcul des distances
+
+        int indice_min = -1;
+        double distanceMin = -1.0;
+
+        for( int i=0 ; i<nb_image_base ; i++){
+
+            double sum_carre = 0.0;
+
+            for( int j=0 ; j<nb_eigenface ; j++){
+
+                double alpha_img = signature_img[j][0];
+                double alpha_base_img = tab_signature[j][i] ;
+
+                double difference = alpha_img - alpha_base_img;
+
+                sum_carre = sum_carre + difference*difference;
+            }
+            double distance = Math.sqrt(sum_carre);
+
+            if (distance < distanceMin || distanceMin == -1){
+                distanceMin = distance;
+                indice_min = i;
+            }
         }
 
+        return indice_min;
 
-        // Projection 
+    }
 
 
 
-}
+
+
+
 
 
 
