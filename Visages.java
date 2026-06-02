@@ -36,10 +36,18 @@ public class Visages{
         this.matrixA = centrerMatrice();
     }
 
-    public Visages(Image image){
+    /**
+     * @author Nathan HAVARD
+     * @param Image image l'image à analyser
+     * @param Visages modele ensemble des visages de référence, utilisé pour récupérer le visage moyen
+     * @brief Constructeur pour une image à analyser. Transforme l'image en vecteur colonne et la centre
+     * sur le visage moyen du modèle de référence (et non sur elle-même).
+     */
+    public Visages(Image image, Visages modele){
         this.image = image;
-        this.matrixVecteur = creerMatrixVecteur();
-        this.imageAanalyser = centrerMatrice();
+        this.matrixVecteur = image.getMatrix();
+        SimpleMatrix moyen = modele.calculerVisageMoyen();
+        this.imageAanalyser = matrixVecteur.minus(moyen);
     }
 
 
@@ -53,7 +61,7 @@ public class Visages{
      * @brief Construit la matrice contenant toutes les images sous forme de vecteurs, une image par colonne.
      */
     private SimpleMatrix creerMatrixVecteur(){
-        int nbPixels = imagesmatrixD.get(0).getMatrix().getNumRows();
+        int nbPixels = images.get(0).getMatrix().getNumRows();
         int nbImages = images.size();
         SimpleMatrix matrice = new SimpleMatrix(nbPixels, nbImages);
 
