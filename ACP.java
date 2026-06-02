@@ -27,10 +27,13 @@ public class ACP {
     //------- DEFINITION DES VARIABLES ---------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------
 
-    private Visages visages;
-    private double[][] tab_eigenface;
-    private int nb_valeurPropre;
-    private double[][] alpha;
+    private Visages visages; 
+    
+    private double[][] tab_eigenface; // tableau de double qui stocke les eigenface
+    
+    private int nb_valeurPropre; // entier qui stocke le nb de valeurs propres
+    
+    private double[][] omega; // tab de double qui stocke les signatures
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
@@ -41,7 +44,7 @@ public class ACP {
      * @author Jules Turchi et Nathan Havard
      * @param visages objet Visages contenant la matrice centrée A et la matrice de covariance réduite A^T*A
      * @brief Constructeur de l'ACP. Calcule les valeurs/vecteurs propres de A^T*A, détermine le nombre
-     * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (alpha).
+     * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (omega).
      */
     public ACP(Visages visages){
 
@@ -55,7 +58,7 @@ public class ACP {
 
         // Calcul des eigenfaces puis des signatures (projections) de la base
         this.tab_eigenface = calculer_eigenface(visages.getMatrixA(), nb_valeurPropre, listepropre);
-        this.alpha = projection(visages.getMatrixA(), tab_eigenface, nb_valeurPropre);
+        this.omega = projection(visages.getMatrixA(), tab_eigenface, nb_valeurPropre);
     }
 
     //------------------------------------------------------------------------------------------------------------
@@ -75,8 +78,8 @@ public class ACP {
         return nb_valeurPropre;
     }
 
-    public double[][] getAlpha(){
-        return alpha;
+    public double[][] getOmega(){
+        return omega;
     }
 
 
@@ -84,8 +87,6 @@ public class ACP {
     //------------------------------------------------------------------------------------------------------------
     //------- SETTER --------------------------------------------------------------------------------------------- 
     //------------------------------------------------------------------------------------------------------------
-
-
 
 
     /**
@@ -121,11 +122,11 @@ public class ACP {
 
     /**
 	 * @author Jules Turchi
-	 * @param alpha tableau contenant les projections des images
-	 * @brief Fonction qui met à jour les projections (alpha)
+	 * @param omega tableau contenant les projections des images
+	 * @brief Fonction qui met à jour les projections (omega)
 	 */
-    public void setAlpha(double[][] alpha){
-        this.alpha = alpha;
+    public void setOmega(double[][] omega){
+        this.omega = omega;
     }
 
 
@@ -195,7 +196,7 @@ public class ACP {
 
         SimpleEVD<SimpleMatrix> decomposition = matrixVecteur.eig(); //Récupère des listes contenants les valeurs propres et les vecteur propre associé
 
-        System.out.println(decomposition);
+        //System.out.println(decomposition);
 
         int taille = matrixVecteur.numRows();
 
@@ -221,8 +222,8 @@ public class ACP {
             vecteurPropre_Trie[i] = liste_VectPropre[indices[i]];
         }
         ListePropre listepropre = new ListePropre(valeurPropre_Trie,vecteurPropre_Trie);
-        System.out.println(Arrays.toString(listepropre.valeurPropre_Trie));
-        System.out.println(Arrays.deepToString(listepropre.vecteurPropre_Trie));
+        //System.out.println(Arrays.toString(listepropre.valeurPropre_Trie));
+        //System.out.println(Arrays.deepToString(listepropre.vecteurPropre_Trie));
 
 
         return listepropre;
@@ -326,10 +327,9 @@ public class ACP {
 
             double norme = Math.sqrt(lambda);
 
-
             for (int j=0; j< taille ; j++){
 
-                tab_eigenface[j][i] = V_h.get(i,0) / norme;
+                tab_eigenface[j][i] = V_h.get(j,0) / norme;
             }
         }
 
@@ -358,7 +358,7 @@ public class ACP {
         int nb_pxImg =  matrixA.numRows(); // Nombre de pixel par image dans la matrice
 
 
-        double[][] alpha = new double[nb_eigenface][nb_img];
+        double[][] omega = new double[nb_eigenface][nb_img];
 
 
         for( int i=0 ; i<nb_img ; i++){
@@ -372,10 +372,10 @@ public class ACP {
                     prod_scal = prod_scal + tab_eigenface[k][j] * matrixA.get(k,i);
 
                 }
-                alpha[j][i] = prod_scal;
+                omega[j][i] = prod_scal;
             }
         }
-        return alpha;
+        return omega;
     }
 
 
@@ -394,7 +394,7 @@ public class ACP {
      * @return un liste de double[] qui contient les projections
 	 * @brief Fonction qui projete l'image étudiée et qui retourne l'image la plus proche
 	*/
-    public static int identification(double[][] tab_signature, SimpleMatrix image, double[][] tab_eigenface, int nb_eigenface){
+    public static double[] identification(double[][] tab_signature, SimpleMatrix image, double[][] tab_eigenface, int nb_eigenface){
 
         // On récupère la dimension de l'image
         int nb_col = image.numCols(); // Nombre d'image dans la matrice
@@ -420,10 +420,10 @@ public class ACP {
 
             for( int j=0 ; j<nb_eigenface ; j++){
 
-                double alpha_img = signature_img[j][0];
-                double alpha_base_img = tab_signature[j][i] ;
+                double omega_img = signature_img[j][0];
+                double omega_base_img = tab_signature[j][i] ;
 
-                double difference = alpha_img - alpha_base_img;
+                double difference = omega_img - omega_base_img;
 
                 sum_carre = sum_carre + difference*difference;
             }
@@ -435,7 +435,10 @@ public class ACP {
             }
         }
 
-        return indice_min;
+        double[] res = new double[2];
+        res[0] =  indice_min;
+        res[1] = distanceMin;
+        return res;
 
     }
 

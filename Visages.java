@@ -15,6 +15,7 @@ public class Visages{
     private SimpleMatrix matrixVecteur;
     private SimpleMatrix matrixD;
     private SimpleMatrix matrixA;
+    private SimpleMatrix visageMoyen;
 
     private Image image;
     private SimpleMatrix imageAanalyser;
@@ -34,6 +35,7 @@ public class Visages{
         this.matrixVecteur = creerMatrixVecteur();
         this.matrixD = calculerMatriceCovarianceReduite();
         this.matrixA = centrerMatrice();
+        this.visageMoyen = calculerVisageMoyen();
     }
 
     /**
@@ -201,6 +203,24 @@ public class Visages{
      */
     public void setMatrixA(SimpleMatrix matrixA){
         this.matrixA = matrixA;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice du visage moyen
+     * @brief Retourne le visage moyen.
+     */
+    public SimpleMatrix getvisageMoyen(){
+        return visageMoyen;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param matrixA matrice du visage moyen
+     * @brief Modifie le visage moyen.
+     */
+    public void setvisageMoyen(SimpleMatrix visageMoyen){
+        this.visageMoyen = visageMoyen;
     }
 
     /**

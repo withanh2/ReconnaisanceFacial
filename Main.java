@@ -7,19 +7,99 @@ import java.util.Arrays;
 
 public class Main {
 
+
+
+    //----------------------------------------------------------------------------------------------------------------------------
+    //------- FONCTION TEST ------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
 	
 
-	public static void main(String[] args){
 
+
+    /**
+    * @author Jules Turchi et Nathan Havard
+    * @brief Procedure de test du code : on crée de fausses images pour tester le bon fonctionnement de la procedure
+    */
+    public static void test(){
+
+        //------- Création de la base des images ---------------------------------------------------------------------------------
+
+        // On crée des images de 4 pixels afin de pouvoir réaliser les tests
+        SimpleMatrix matExemple1 = new SimpleMatrix(new double[][]{{1.0},{2.0},{3.0},{4.0}});
+        Image image1 = new Image(matExemple1);
+        
+        SimpleMatrix matExemple2 = new SimpleMatrix(new double[][]{{250.0},{200.0},{30.0},{240.0}});
+        Image image2 = new Image(matExemple2);
+        
+        SimpleMatrix matExemple3 = new SimpleMatrix(new double[][]{{10.0}, {20.0},{3.0},{4.0}});
+        Image image3 = new Image(matExemple3);
+        
+        SimpleMatrix matExemple4 = new SimpleMatrix(new double[][]{{4.0}, {8.0},{9.0}, {45.0}});
+        Image image4 = new Image(matExemple4);
+        
+        // Création de la liste des images
+        List<Image> liste = new ArrayList<>();
+        liste.add(image1);
+        liste.add(image2);
+        liste.add(image3);
+        liste.add(image4);
+
+
+        // Création d'une nouvelle classe image
+        Visages visages = new Visages(liste);
+
+
+        // Affichage des différentes matrices pour verifier les données
+        System.out.println("Matrice de vecteur");
+        System.out.println(visages.getMatrixVecteur());
+
+        System.out.println("Matrice A");
+        System.out.println(visages.getMatrixA());
+
+        System.out.println("Visage moyen");
+        System.out.println(visages.getvisageMoyen());
     
-    
-	    SimpleMatrix matExemple = new SimpleMatrix(new double[][]{
-        {1.0, 1.0, 1.0},
-        {1.0, 1.0, 1.0},
-        {3.0, 0.0, 0.0}
-        });
-			
-			
+		System.out.println("Matrice D");
+        System.out.println(visages.getMatrixD());	
+
+        // Création de la classe ACP 
+        ACP acp = new ACP(visages);
+        
+        // Vérification des infos des différents attributs de classes
+        System.out.println("Nb valeur propre gardé");
+        System.out.println(acp.getNb_valeurPropre() + "\n");
+
+        System.out.println("Tableau eigenface");
+        System.out.println(Arrays.deepToString(acp.getTab_eigenface())+"\n");
+
+        System.out.println("Omega");
+        System.out.println(Arrays.deepToString(acp.getOmega()));
+
+
+    	// ------- Création de l'image à tester -------------------------------------------------------------------------------------
+
+
+		SimpleMatrix matAanalyser1 = new SimpleMatrix(new double[][]{{10.0}, {9.0},{4.0}, {45.0}});
+        Image imageAanalyser = new Image(matAanalyser1);
+        Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
+        
+        
+        
+        // Application de l'ACP
+        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
+        
+        // Affichage des resultats de l'ACP
+        System.out.println("\n\nOn analyser notre image de test");
+        System.out.println("Voici l'indice_min : " + res[0]);
+        System.out.println("Voici la distance min : " + res[1]);
+
+
+
+    	//------- Option affichage des valeurs propres -----------------------------------------------------------------------------
+
+    */
+
+        /*
 		ListePropre vp = calculer_ValeurPropre(matExemple);
         ArrayList<Double> vp2 = nb_vp_a_garder(vp.valeurPropre_Trie);
 		for (int i = 0; i < vp.valeurPropre_Trie.length; i++){
@@ -31,138 +111,7 @@ public class Main {
         for (int i = 0; i < vp2.size(); i++){
 			System.out.println("valeur propre " + i + " : " + vp2.get(i));
 		}
-
-	}
-
-
-
-
-
-    
-
-    public static double[] recuperer_ValeurPropre(int taille ,SimpleEVD<SimpleMatrix> decomposition){
-
-
-        double[] valeurPropre = new double[taille]; // Création d'un tableau pour stocker les valeurs propres
-
-        // Parcours du gros tableau pour résupérer uniquement les valeurs propres
-        for (int i=0; i<taille; i++){
-            valeurPropre[i] = decomposition.getEigenvalue(i).getReal();
-        }
-
-    return valeurPropre;
-    }
-
-
-
-
-
-
-    public static double[][] recuperer_VecteurPropre( int taille, SimpleEVD<SimpleMatrix> decomposition){
-
-        double[][] vecteurPropre = new double[taille][taille]; // Chaque ligne = un vecteur propre
-
-        // Parcours pour récupérer chaque vecteur propre associé
-        for (int i=0; i<taille; i++){
-            SimpleMatrix vecteur = decomposition.getEigenVector(i);
-            for (int j=0; j<taille; j++){
-                vecteurPropre[i][j] = vecteur.get(j, 0);
-            }
-        }
-
-    return vecteurPropre;
-    }
-
-
-
-    public static ListePropre calculer_ValeurPropre(SimpleMatrix matrice){
-
-        SimpleEVD<SimpleMatrix> decomposition = matrice.eig(); //Récupère des listes contenants les valeurs propres et les vecteur propre associé
-
-        System.out.println(decomposition);
-
-        int taille = matrice.numRows();
-
-        // On met les valeurs propre dans l'odre décroissant
-
-        double [] liste_ValPropre = recuperer_ValeurPropre(taille,decomposition);
-        double [][] liste_VectPropre = recuperer_VecteurPropre(taille,decomposition);
-
-
-        Integer[] indices = new Integer[taille];
-        for (int i = 0; i < taille; i++){
-            indices[i] = i;
-        }
-
-        Arrays.sort(indices, (a, b) -> Double.compare(liste_ValPropre[b], liste_ValPropre[a]));
-
-        double[] valeurPropre_Trie       = new double[taille];
-        double[][] vecteurPropre_Trie    = new double[taille][taille];
-        for (int i = 0; i < taille; i++){
-            valeurPropre_Trie[i] = liste_ValPropre[indices[i]];
-            vecteurPropre_Trie[i] = liste_VectPropre[indices[i]];
-        }
-        ListePropre listepropre = new ListePropre(valeurPropre_Trie,vecteurPropre_Trie);
-        System.out.println(Arrays.toString(listepropre.valeurPropre_Trie));
-        System.out.println(Arrays.deepToString(listepropre.vecteurPropre_Trie));
-
-
-        return listepropre;
-    }
-
-
-
-
-
-    public static ArrayList<Double> nb_vp_a_garder(double[] valeurPropre_Trie){
-
-        double seuil = 0.95;
-        int taille = valeurPropre_Trie.length;
-        double som_totale_vp = 0;
-        double som_partielle_vp = 0;
-        int continuer=1;
-        int nb_vp = 0;
-
-        ArrayList<Double> liste_ValPropre = new ArrayList<>();
-
-
-        for (int i = 0; i < taille; i++){
-            som_totale_vp = som_totale_vp + valeurPropre_Trie[i];
-        } 
-
-
-        while ((nb_vp < taille) && (continuer==1)) {
-            
-            som_partielle_vp = som_partielle_vp + valeurPropre_Trie[nb_vp];
-            liste_ValPropre.add(valeurPropre_Trie[nb_vp]);
-            nb_vp ++;
-
-            if ((som_partielle_vp / som_totale_vp) > seuil){
-                
-                continuer = 0;
-            
-            }
-
-        }
-
-
-        return liste_ValPropre;
-
-    }
-
-
-
-
-
-
-/*
-
-
-
-    public static ListePropre ACP(ArrayList<Double> liste_ValPropre, ListePropre listepropre){
-
-
-
+        */
 
 
 
@@ -172,10 +121,66 @@ public class Main {
 
 
 
+
+
+
+    //----------------------------------------------------------------------------------------------------------------------------
+    //------- FONCTION RECONNAISSANCE FACIALE ------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
+	
+
+    /**
+    * @author Jules Turchi et Nathan Havard
+    * @param visages objet Visages contenant la matrice centrée A et la matrice de covariance réduite A^T*A
+    * @return double[] qui contient la liste des valeurs propres
+    * @brief Constructeur de l'ACP. Calcule les valeurs/vecteurs propres de A^T*A, détermine le nombre
+    * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (omega).
     */
+	public static Image reconnaissanceFaciale() {
+		//------- Pré-traitement ---------------------------------------------------------------------------------
+		
+        /*création d'un objet de prétraitement*/
+		//Pretraitement pt = new PreTraitement(92,112); 
+		
+		
+		/*application du prétraitement*/
+		//pt.verifierConformite(chemin);
+		//Image imgTraitee = new Image(chemin);
+		
+		
+		
+		//------- Création Image depuis nos donnée -------------------------------------------------------------------
 
+
+
+		
+		//------- ACP -------------------------------------------------------------------------------------------
+
+
+		List<Image> liste = chargerImages("donnees/donnee/reference");
+        Visages visages = new Visages(liste);
+        ACP acp = new ACP(visages);
         
 
+    	//------- Calculer résultat -------------------------------------------------------------------------------------
+        SimpleMatrix matAanalyser1 = new SimpleMatrix(new double[][]{{10.0}, {9.0},{4.0}, {45.0}});
+        Image imageAanalyser = new Image(matAanalyser1);
+        Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
+        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
+        System.out.println("\n\nOn analyser notre image de test");
+        System.out.println("Voici l'indice_min : " + res[0]);
+        System.out.println("Voici la distance min : " + res[1]);
+        
+        return 
 
-	
+    }
+    
+	public static void main(String[] args){
+
+        System.out.println("Bienvenue sur notre application de reconnaissance faciale !");
+
+
+	}
+    
+
 }
