@@ -11,10 +11,9 @@ public class Visages{
     //------- DEFINITION DES VARIABLES ---------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------
 
-    private List<Image> images;
-    private SimpleMatrix matrixVecteur;
-    private SimpleMatrix matrixD;
-    private SimpleMatrix matrixA;
+    protected List<Image> images;
+    protected SimpleMatrix matrixVecteur;
+    protected SimpleMatrix matrixD;
 
     //------------------------------------------------------------------------------------------------------------
     //------- CONSTRUCTEURS -------------------------------------------------------------------------------------- 
@@ -23,13 +22,12 @@ public class Visages{
     /** 
      * @author Nathan HAVARD
      * @param List<Image> images liste des images de référence à utiliser
-     * @brief Constructeur de Visages. Initialise la matrice des images en vecteurs et la matrice de covariance réduite et la matrice A (matrice vecteur sans le visage moyen).
+     * @brief Constructeur de Visages. Initialise la matrice des images en vecteurs et la matrice de covariance réduite. La matrice centrée (matrice A) est portée par les classes filles VisagesListeImage et VisagesAanalyser.
      */
     public Visages(List<Image> images){
         this.images = images;
         this.matrixVecteur = creerMatrixVecteur();
         this.matrixD = calculerMatriceCovarianceReduite();
-        this.matrixA = centrerMatrice();
     }
 
     //------------------------------------------------------------------------------------------------------------
@@ -42,7 +40,7 @@ public class Visages{
      * @brief Construit la matrice contenant toutes les images sous forme de vecteurs, une image par colonne.
      */
     private SimpleMatrix creerMatrixVecteur(){
-        int nbPixels = images.get(0).getMatrix().getNumRows();
+        int nbPixels = imagesmatrixD.get(0).getMatrix().getNumRows();
         int nbImages = images.size();
         SimpleMatrix matrice = new SimpleMatrix(nbPixels, nbImages);
 
