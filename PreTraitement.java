@@ -60,13 +60,30 @@ public class PreTraitement {
 	public boolean getEstNivGris() {
 		return(this.estNivGris);
 	}
+
+	/** 
+	 * @author Maxime Le Glanaër
+	 * @param String chemin le chemin vers l'image que l'on doit vérifier
+	 * @brief charge une image dans le buffer pour pouvoir la manipuler.
+	 */
+	public static double[][] chargerImage(String chemin) throws IOException {
+    String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
+    return switch (ext) {
+        case "pgm" -> lirePGM(chemin);
+        case "jpg", "jpeg","png", "bmp"  -> {
+            BufferedImage img = ImageIO.read(new File(chemin));
+        }
+        default -> throw new UnsupportedOperationException("Format non supporté : " + ext);
+    	};
+	}
 	
 	/** 
 	 * @author Maxime Le Glanaër
 	 * @param BufferedImage img l'image que l'on doit vérifier
 	 * @brief Vérifie si une image a la bonne taille selon le traitement manipulé et est en niveau de gris si nécessaire
 	 */
-	public void verifierConformite(BufferedImage img) {
+	public void verifierConformite(String chemin) {
+		double[][] img = chargerImage(chemin)
 	    if (img == null) {
 	        throw new IllegalArgumentException("Image non chargée (fichier introuvable ou format non supporté).");
 	    }
@@ -89,22 +106,5 @@ public class PreTraitement {
 	    }
 	}
 	
-	/** 
-	 * @author Maxime Le Glanaër
-	 * @param BufferedImage img l'image extérieure à transformer
-	 * @return Image imgRep l'image transformée
-	 * @brief Transforme l'image extérieure (matrice de pixels) supposée vérifiée en Image.
-	 */
-	public DMatrixRMaj transformer(BufferedImage img) {
-		DMatrixRMaj imgRep = new DMatrixRMaj(this.getLongueurCible(), this.getHauteurCible());
-		for (int i = 0; i < img.getHeight(); i++) {
-	        for (int j = 0; j < img.getWidth(); j++) {
-	            int pixel = img.getRGB(i, j);
-	            int r = (pixel >> 16) & 0xFF;
-	            imgRep.set(i, j, r);
-			}
-		}
-		return (imgRep);
-	}
 	
 }
