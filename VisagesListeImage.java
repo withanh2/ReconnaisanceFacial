@@ -25,4 +25,26 @@ public class VisagesListeImage extends Visages{
         super(images);
         this.matrixA = centrerMatrice();
     }
+
+    //------------------------------------------------------------------------------------------------------------
+    //------- GETTERS ET SETTERS ---------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice centrée (matrice A)
+     * @brief Retourne la matrice A.
+     */
+    public SimpleMatrix getMatrixA(){
+        return matrixA;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param matrixA matrice centrée (matrice A)
+     * @brief Modifie la matrice A.
+     */
+    public void setMatrixA(SimpleMatrix matrixA){
+        this.matrixA = matrixA;
+    }
 }

@@ -107,6 +107,64 @@ public class Visages{
     }
 
     //------------------------------------------------------------------------------------------------------------
+    //------- GETTERS ET SETTERS ---------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @author Nathan HAVARD
+     * @return List<Image> liste des images de référence
+     * @brief Retourne la liste des images.
+     */
+    public List<Image> getImages(){
+        return images;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param images liste des images de référence
+     * @brief Modifie la liste des images.
+     */
+    public void setImages(List<Image> images){
+        this.images = images;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice des images sous forme de vecteurs
+     * @brief Retourne la matrice des vecteurs.
+     */
+    public SimpleMatrix getMatrixVecteur(){
+        return matrixVecteur;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param matrixVecteur matrice des images sous forme de vecteurs
+     * @brief Modifie la matrice des vecteurs.
+     */
+    public void setMatrixVecteur(SimpleMatrix matrixVecteur){
+        this.matrixVecteur = matrixVecteur;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice de covariance réduite
+     * @brief Retourne la matrice de covariance réduite.
+     */
+    public SimpleMatrix getMatrixD(){
+        return matrixD;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param matrixD matrice de covariance réduite
+     * @brief Modifie la matrice de covariance réduite.
+     */
+    public void setMatrixD(SimpleMatrix matrixD){
+        this.matrixD = matrixD;
+    }
+
+    //------------------------------------------------------------------------------------------------------------
     //------- TEST POUR VERIFIER  --------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------
 

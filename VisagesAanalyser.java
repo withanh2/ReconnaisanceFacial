@@ -25,4 +25,26 @@ public class VisagesAanalyser extends Visages{
         super(images);
         this.ImageAanalyser = centrerMatrice();
     }
+
+    //------------------------------------------------------------------------------------------------------------
+    //------- GETTERS ET SETTERS ---------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @author Nathan HAVARD
+     * @return SimpleMatrix matrice centrée de l'image à analyser
+     * @brief Retourne la matrice de l'image à analyser.
+     */
+    public SimpleMatrix getImageAanalyser(){
+        return ImageAanalyser;
+    }
+
+    /**
+     * @author Nathan HAVARD
+     * @param ImageAanalyser matrice centrée de l'image à analyser
+     * @brief Modifie la matrice de l'image à analyser.
+     */
+    public void setImageAanalyser(SimpleMatrix ImageAanalyser){
+        this.ImageAanalyser = ImageAanalyser;
+    }
 }
