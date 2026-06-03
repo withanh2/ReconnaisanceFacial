@@ -68,10 +68,10 @@ public class Main {
         
         // Vérification des infos des différents attributs de classes
         System.out.println("Nb valeur propre gardé");
-        System.out.println(acp.getNb_valeurPropre() + "\n");
+        System.out.println(acp.getNbValeurPropre() + "\n");
 
         System.out.println("Tableau eigenface");
-        System.out.println(Arrays.deepToString(acp.getTab_eigenface())+"\n");
+        System.out.println(Arrays.deepToString(acp.getTabEingenface())+"\n");
 
         System.out.println("Omega");
         System.out.println(Arrays.deepToString(acp.getOmega()));
@@ -87,7 +87,7 @@ public class Main {
         
         
         // Application de l'ACP
-        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
+        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
         
         // Affichage des resultats de l'ACP
         System.out.println("\n\nOn analyser notre image choisi");
@@ -101,10 +101,10 @@ public class Main {
     
 
         /*
-		ListePropre vp = calculer_ValeurPropre(matExemple);
-        ArrayList<Double> vp2 = nb_vp_a_garder(vp.valeurPropre_Trie);
-		for (int i = 0; i < vp.valeurPropre_Trie.length; i++){
-			System.out.println("valeur propre " + i + " : " + vp.valeurPropre_Trie[i]);
+		ListePropre vp = calculerValeurPropre(matExemple);
+        ArrayList<Double> vp2 = nbVpAGarder(vp.valeurPropreTrie);
+		for (int i = 0; i < vp.valeurPropreTrie.length; i++){
+			System.out.println("valeur propre " + i + " : " + vp.valeurPropreTrie[i]);
 		}
 			
         System.out.println("--------------------------------------------------------------");
@@ -189,10 +189,10 @@ public class Main {
         
 
     	//------- Calculer résultat pour une image -----------------------------------------------------------------------------
-        Image imageAanalyser = new Image("donnees/donnee/test/connus/axel/9.pgm");
+        Image imageAanalyser = new Image("donnees/donnee/test/connus/laure/10.pgm");
         //Image imageAanalyser = new Image("donnees/donnee/test/inconnus/jeanne/1.pgm");
         Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
-        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTab_eigenface(),acp.getNb_valeurPropre());
+        double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
         System.out.println("\nOn analyser notre image choisi");
         System.out.println("Voici l'indice_min : " + res[0]);
         System.out.println("Voici la distance min : " + res[1]);

@@ -29,9 +29,9 @@ public class ACP {
 
     private Visages visages; 
     
-    private double[][] tab_eigenface; // tableau de double qui stocke les eigenface
+    private double[][] tabEingenface; // tableau de double qui stocke les eigenface
     
-    private int nb_valeurPropre; // entier qui stocke le nb de valeurs propres
+    private int nbValeurPropre; // entier qui stocke le nb de valeurs propres
     
     private double[][] omega; // tab de double qui stocke les signatures
 
@@ -51,14 +51,14 @@ public class ACP {
         this.visages = visages;
 
         // Décomposition de la matrice de covariance réduite (A^T*A) en valeurs et vecteurs propres triés
-        ListePropre listepropre = calculer_ValeurPropre(visages.getMatrixD());
+        ListePropre listepropre = calculerValeurPropre(visages.getMatrixD());
 
         // Nombre de valeurs propres à garder pour atteindre le seuil de représentation
-        this.nb_valeurPropre = nb_vp_a_garder(listepropre.valeurPropre_Trie).size();
+        this.nbValeurPropre = nbVpAGarder(listepropre.valeurPropreTrie).size();
 
         // Calcul des eigenfaces puis des signatures (projections) de la base
-        this.tab_eigenface = calculer_eigenface(visages.getMatrixA(), nb_valeurPropre, listepropre);
-        this.omega = projection(visages.getMatrixA(), tab_eigenface, nb_valeurPropre);
+        this.tabEingenface = calculerEigenface(visages.getMatrixA(), nbValeurPropre, listepropre);
+        this.omega = projection(visages.getMatrixA(), tabEingenface, nbValeurPropre);
     }
 
     //------------------------------------------------------------------------------------------------------------
@@ -70,12 +70,12 @@ public class ACP {
         return visages;
     }
 
-    public double[][] getTab_eigenface(){
-        return tab_eigenface;
+    public double[][] getTabEingenface(){
+        return tabEingenface;
     }
 
-    public int getNb_valeurPropre(){
-        return nb_valeurPropre;
+    public int getNbValeurPropre(){
+        return nbValeurPropre;
     }
 
     public double[][] getOmega(){
@@ -101,22 +101,22 @@ public class ACP {
 
     /**
 	 * @author Jules Turchi
-	 * @param tab_eigenface tableau contenant les eigenfaces
+	 * @param tabEingenface tableau contenant les eigenfaces
 	 * @brief Fonction qui met à jour le tableau des eigenfaces
 	 */
-    public void setTab_eigenface(double[][] tab_eigenface){
-        this.tab_eigenface = tab_eigenface;
+    public void settabEingenface(double[][] tabEingenface){
+        this.tabEingenface = tabEingenface;
     }
 
 
 
     /**
 	 * @author Jules Turchi
-	 * @param nb_valeurPropre entier qui correspond au nombre de valeurs propres
+	 * @param nbValeurPropre entier qui correspond au nombre de valeurs propres
 	 * @brief Fonction qui met à jour le nombre de valeurs propres
 	 */
-    public void setNb_valeurPropre(int nb_valeurPropre){
-        this.nb_valeurPropre = nb_valeurPropre;
+    public void setnbValeurPropre(int nbValeurPropre){
+        this.nbValeurPropre = nbValeurPropre;
     }
 
 
@@ -147,7 +147,7 @@ public class ACP {
      * @return double[] qui contient la liste des valeurs propres
 	 * @brief Fonction qui récupère la liste des valeurs propres
 	 */
-    public static double[] recuperer_ValeurPropre(int taille ,SimpleEVD<SimpleMatrix> decomposition){
+    public static double[] recupererValeurPropre(int taille ,SimpleEVD<SimpleMatrix> decomposition){
 
 
         double[] valeurPropre = new double[taille]; // Création d'un tableau pour stocker les valeurs propres
@@ -170,7 +170,7 @@ public class ACP {
      * @return double[] qui contient la liste des vecteurs propres
 	 * @brief Fonction qui récupère la liste des vecteurs propres
 	 */
-    public static double[][] recuperer_VecteurPropre( int taille, SimpleEVD<SimpleMatrix> decomposition){
+    public static double[][] recupererVecteurPropre( int taille, SimpleEVD<SimpleMatrix> decomposition){
 
         double[][] vecteurPropre = new double[taille][taille]; // Chaque ligne = un vecteur propre
 
@@ -192,7 +192,7 @@ public class ACP {
 	 * @brief Fonction qui récupère la liste des vecteurs propres et vecteurs propres, classe les valeurs propres 
      * et vecteurs propres associées par ordre croissant puis les ajoute dans un nouvel élément de la classe ListePropre	 
     */
-    public static ListePropre calculer_ValeurPropre(SimpleMatrix matrixVecteur){
+    public static ListePropre calculerValeurPropre(SimpleMatrix matrixVecteur){
 
         SimpleEVD<SimpleMatrix> decomposition = matrixVecteur.eig(); //Récupère des listes contenants les valeurs propres et les vecteur propre associé
 
@@ -202,8 +202,8 @@ public class ACP {
 
         // On récupère les valeurs propres et les vecteurs propres
 
-        double [] liste_ValPropre = recuperer_ValeurPropre(taille,decomposition);
-        double [][] liste_VectPropre = recuperer_VecteurPropre(taille,decomposition);
+        double [] listeValPropre = recupererValeurPropre(taille,decomposition);
+        double [][] listeVectPropre = recupererVecteurPropre(taille,decomposition);
 
 
         Integer[] indices = new Integer[taille];
@@ -213,17 +213,17 @@ public class ACP {
 
 
         // On trie la liste des valeurs propre par ordre décroissant en gardant l'association (indice) avec vecteurs propres
-        Arrays.sort(indices, (a, b) -> Double.compare(liste_ValPropre[b], liste_ValPropre[a]));
+        Arrays.sort(indices, (a, b) -> Double.compare(listeValPropre[b], listeValPropre[a]));
 
-        double[] valeurPropre_Trie       = new double[taille];
-        double[][] vecteurPropre_Trie    = new double[taille][taille];
+        double[] valeurPropreTrie       = new double[taille];
+        double[][] vecteurPropreTrie    = new double[taille][taille];
         for (int i = 0; i < taille; i++){
-            valeurPropre_Trie[i] = liste_ValPropre[indices[i]];
-            vecteurPropre_Trie[i] = liste_VectPropre[indices[i]];
+            valeurPropreTrie[i] = listeValPropre[indices[i]];
+            vecteurPropreTrie[i] = listeVectPropre[indices[i]];
         }
-        ListePropre listepropre = new ListePropre(valeurPropre_Trie,vecteurPropre_Trie);
-        //System.out.println(Arrays.toString(listepropre.valeurPropre_Trie));
-        //System.out.println(Arrays.deepToString(listepropre.vecteurPropre_Trie));
+        ListePropre listepropre = new ListePropre(valeurPropreTrie,vecteurPropreTrie);
+        //System.out.println(Arrays.toString(listepropre.valeurPropreTrie));
+        //System.out.println(Arrays.deepToString(listepropre.vecteurPropreTrie));
 
 
         return listepropre;
@@ -234,36 +234,36 @@ public class ACP {
 
     /**
 	 * @author Jules Turchi
-	 * @param valeurPropre_Trie tableau contenant les valeurs propres dans l'odre décroissant 
+	 * @param valeurPropreTrie tableau contenant les valeurs propres dans l'odre décroissant 
      * @return un liste de double[] qui contient la liste des valeurs propres à garder
 	 * @brief Fonction qui récupère la liste des valeurs propres à garder pour avoir un taux de représentation supérieur au seuil
 	 */
-    public static ArrayList<Double> nb_vp_a_garder(double[] valeurPropre_Trie){
+    public static ArrayList<Double> nbVpAGarder(double[] valeurPropreTrie){
 
         double seuil = 0.95; // Seuil pour la représentation des données
         
-        int taille = valeurPropre_Trie.length;
-        double som_totale_vp = 0;
-        double som_partielle_vp = 0; 
+        int taille = valeurPropreTrie.length;
+        double somTotaleVp = 0;
+        double somPartielleVp = 0; 
         int continuer=1;
-        int nb_vp = 0;
+        int nbVp = 0;
 
-        ArrayList<Double> liste_ValPropre = new ArrayList<>();
+        ArrayList<Double> listeValPropre = new ArrayList<>();
 
         // Calcul somme totale des valeurs propres (denominateur)
         for (int i = 0; i < taille; i++){
-            som_totale_vp = som_totale_vp + valeurPropre_Trie[i];
+            somTotaleVp = somTotaleVp + valeurPropreTrie[i];
         } 
 
         // On ajoute des valeurs propres a prendre en compte tant que le seuil n'est pas franchis
-        while ((nb_vp < taille) && (continuer==1)) {
+        while ((nbVp < taille) && (continuer==1)) {
             
-            som_partielle_vp = som_partielle_vp + valeurPropre_Trie[nb_vp];
-            liste_ValPropre.add(valeurPropre_Trie[nb_vp]);
-            nb_vp ++;
+            somPartielleVp = somPartielleVp + valeurPropreTrie[nbVp];
+            listeValPropre.add(valeurPropreTrie[nbVp]);
+            nbVp ++;
 
             // Condition arret
-            if ((som_partielle_vp / som_totale_vp) > seuil){
+            if ((somPartielleVp / somTotaleVp) > seuil){
                 
                 continuer = 0;
             
@@ -271,7 +271,7 @@ public class ACP {
 
         }
 
-        return liste_ValPropre;
+        return listeValPropre;
 
     }
 
@@ -285,41 +285,41 @@ public class ACP {
     /**
 	 * @author Jules Turchi
 	 * @param matrixA tableau contenant les valeurs propres dans l'odre décroissant
-     * @param nb_vp nb de valeur propre gardéees ie nb de d'eigenfaces à calculer 
+     * @param nbVp nb de valeur propre gardéees ie nb de d'eigenfaces à calculer 
 	 * @param listepropre valeurs et vecteurs propre de A^T*A triées par ordre décroissant 
      * @return un liste de double[] qui contient les eigenfaces
 	 * @brief Fonction qui calcule et normalise les vecteurs propres
 	 */
-    public static double[][] calculer_eigenface(SimpleMatrix matrixA, int nb_vp , ListePropre listepropre ){
+    public static double[][] calculerEigenface(SimpleMatrix matrixA, int nbVp , ListePropre listepropre ){
 
         int taille = matrixA.numRows(); // Taille de la matrice A 
 
-        double[][] tab_eigenface = new double[taille][nb_vp];
+        double[][] tabEingenface = new double[taille][nbVp];
     
 
         /**
         * Notation : 
-        * X_h : vecteur propre de A^T*A
-        * V_h : eigenface, vecteur propre de A*A^T
+        * XH : vecteur propre de A^T*A
+        * VH : eigenface, vecteur propre de A*A^T
         */
 
-        for (int i=0; i<nb_vp ; i++){
+        for (int i=0; i<nbVp ; i++){
 
-            double lambda = listepropre.valeurPropre_Trie[i];  // On récupère la valeur propre
+            double lambda = listepropre.valeurPropreTrie[i];  // On récupère la valeur propre
 
-            double[] X_h = listepropre.vecteurPropre_Trie[i]; // On recupère un vecteur propre
+            double[] XH = listepropre.vecteurPropreTrie[i]; // On recupère un vecteur propre
             
 
             // On met ce vecteur sous la forme d'un double sous la forme d'une matrice colonne
-            SimpleMatrix X_h_mat = new SimpleMatrix(X_h.length,1); 
+            SimpleMatrix XHMat = new SimpleMatrix(XH.length,1); 
 
-            for (int j=0; j<X_h.length ; j++){
+            for (int j=0; j<XH.length ; j++){
 
-                X_h_mat.set(j,0,X_h[j]);
+                XHMat.set(j,0,XH[j]);
 
             }
 
-            SimpleMatrix V_h = matrixA.mult(X_h_mat);  // Calcul de A*X_h
+            SimpleMatrix VH = matrixA.mult(XHMat);  // Calcul de A*XH
 
 
 
@@ -329,12 +329,12 @@ public class ACP {
 
             for (int j=0; j< taille ; j++){
 
-                tab_eigenface[j][i] = V_h.get(j,0) / norme;
+                tabEingenface[j][i] = VH.get(j,0) / norme;
             }
         }
 
 
-        return tab_eigenface;
+        return tabEingenface;
 
 
     }
@@ -345,34 +345,34 @@ public class ACP {
 
     /**
 	 * @author Jules Turchi
-	 * @param tab_eigenface tableau contenant les eigenfaces
+	 * @param tabEingenface tableau contenant les eigenfaces
      * @param  matrixA matrice centrée A
-	 * @param nb_eigenface nombre d'eigenfaces 
+	 * @param nbEigenface nombre d'eigenfaces 
      * @return un liste de double[] qui contient les projections
 	 * @brief Fonction qui calcule les projections des eigenfaces
 	*/
-    public static double[][] projection(SimpleMatrix matrixA, double[][] tab_eigenface, int nb_eigenface){
+    public static double[][] projection(SimpleMatrix matrixA, double[][] tabEingenface, int nbEigenface){
 
 
-        int nb_img = matrixA.numCols(); // Nombre d'image dans la matrice
-        int nb_pxImg =  matrixA.numRows(); // Nombre de pixel par image dans la matrice
+        int nbImg = matrixA.numCols(); // Nombre d'image dans la matrice
+        int nbPxImg =  matrixA.numRows(); // Nombre de pixel par image dans la matrice
 
 
-        double[][] omega = new double[nb_eigenface][nb_img];
+        double[][] omega = new double[nbEigenface][nbImg];
 
 
-        for( int i=0 ; i<nb_img ; i++){
+        for( int i=0 ; i<nbImg ; i++){
 
-            for( int j=0 ; j<nb_eigenface ; j++){
+            for( int j=0 ; j<nbEigenface ; j++){
 
-                double prod_scal = 0.0;
+                double prodScal = 0.0;
 
-                for( int k=0 ; k<nb_pxImg ; k++){
+                for( int k=0 ; k<nbPxImg ; k++){
 
-                    prod_scal = prod_scal + tab_eigenface[k][j] * matrixA.get(k,i);
+                    prodScal = prodScal + tabEingenface[k][j] * matrixA.get(k,i);
 
                 }
-                omega[j][i] = prod_scal;
+                omega[j][i] = prodScal;
             }
         }
         return omega;
@@ -388,55 +388,55 @@ public class ACP {
     /**
 	 * @author Jules Turchi
      * @param image image déjà traitée ie sous forme de vecteur et centrée 
-	 * @param tab_eigenface tableau contenant les eigenfaces
-     * @param  tab_signature tableau de double contenant les signatures
-	 * @param nb_eigenface nombre d'eigenfaces 
+	 * @param tabEingenface tableau contenant les eigenfaces
+     * @param  tabSignature tableau de double contenant les signatures
+	 * @param nbEigenface nombre d'eigenfaces 
      * @return un liste de double[] qui contient les projections
 	 * @brief Fonction qui projete l'image étudiée et qui retourne l'image la plus proche
 	*/
-    public static double[] identification(double[][] tab_signature, SimpleMatrix image, double[][] tab_eigenface, int nb_eigenface){
+    public static double[] identification(double[][] tabSignature, SimpleMatrix image, double[][] tabEingenface, int nbEigenface){
 
         // On récupère la dimension de l'image
-        int nb_col = image.numCols(); // Nombre d'image dans la matrice
-        int nb_ligne =  image.numRows(); // Nombre de pixel par image dans la matrice
+        int nbCol = image.numCols(); // Nombre d'image dans la matrice
+        int nbLigne =  image.numRows(); // Nombre de pixel par image dans la matrice
 
         // On récupère les infos sur les signatures
-        int nb_image_base = tab_signature[0].length;
+        int nbImageBase = tabSignature[0].length;
 
 
         // Projection de l'image
-        double[][] signature_img = projection(image,tab_eigenface,nb_eigenface);
+        double[][] signatureImg = projection(image,tabEingenface,nbEigenface);
 
         
         
         // Calcul des distances
 
-        int indice_min = -1;
+        int indiceMin = -1;
         double distanceMin = -1.0;
 
-        for( int i=0 ; i<nb_image_base ; i++){
+        for( int i=0 ; i<nbImageBase ; i++){
 
-            double sum_carre = 0.0;
+            double sumCarre = 0.0;
 
-            for( int j=0 ; j<nb_eigenface ; j++){
+            for( int j=0 ; j<nbEigenface ; j++){
 
-                double omega_img = signature_img[j][0];
-                double omega_base_img = tab_signature[j][i] ;
+                double omegaImg = signatureImg[j][0];
+                double omegaBaseImg = tabSignature[j][i] ;
 
-                double difference = omega_img - omega_base_img;
+                double difference = omegaImg - omegaBaseImg;
 
-                sum_carre = sum_carre + difference*difference;
+                sumCarre = sumCarre + difference*difference;
             }
-            double distance = Math.sqrt(sum_carre);
+            double distance = Math.sqrt(sumCarre);
 
             if (distance < distanceMin || distanceMin == -1){
                 distanceMin = distance;
-                indice_min = i;
+                indiceMin = i;
             }
         }
 
         double[] res = new double[2];
-        res[0] =  indice_min;
+        res[0] =  indiceMin;
         res[1] = distanceMin;
         return res;
 

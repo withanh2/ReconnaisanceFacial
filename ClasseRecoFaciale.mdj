@@ -2163,7 +2163,7 @@
 											"top": 245,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "-nb_valeursPropres: int",
+											"text": "-nbValeursPropres: int",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2181,7 +2181,7 @@
 											"top": 260,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "-tab_eigenfaces: double[ ][ ]",
+											"text": "-tabEingenfaces: double[ ][ ]",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2253,7 +2253,7 @@
 											"top": 313,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+getTab_eigenfaces(): ndarray",
+											"text": "+getTabEingenfaces(): ndarray",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2271,7 +2271,7 @@
 											"top": 328,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+getNb_valeurPropre(): int",
+											"text": "+getNbValeurPropre(): int",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2343,7 +2343,7 @@
 											"top": 388,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+setTab_igenfaces(tab_eigenfaces: ndarray)",
+											"text": "+setTabIgenfaces(tabEingenfaces: ndarray)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2361,7 +2361,7 @@
 											"top": 403,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+setNb_valeurPropre(nb_valeurPropre: int)",
+											"text": "+setnbValeurPropre(nbValeurPropre: int)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2397,7 +2397,7 @@
 											"top": 433,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+recuperer_ValeurPropre(taille: int, decomposition: SimpleEVD<SimpleMatrix>): ndarray",
+											"text": "+recupererValeurPropre(taille: int, decomposition: SimpleEVD<SimpleMatrix>): ndarray",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2415,7 +2415,7 @@
 											"top": 448,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+recuperer_VecteurPropre(taille: int, decomposition: SimpleEVD<SimpleMatrix>): ndarray",
+											"text": "+recupererVecteurPropre(taille: int, decomposition: SimpleEVD<SimpleMatrix>): ndarray",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2433,7 +2433,7 @@
 											"top": 463,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+calculer_ValeurPropre(matrixVecteur: SimpleMatrix): ListePropre",
+											"text": "+calculerValeurPropre(matrixVecteur: SimpleMatrix): ListePropre",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2451,7 +2451,7 @@
 											"top": 478,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+nb_vp_a_garder(valeurPropre_Trie: ndarray): ArrayList<Double>",
+											"text": "+nbVpAGarder(valeurPropreTrie: ndarray): ArrayList<Double>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2469,7 +2469,7 @@
 											"top": 493,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+calculer_eigenface(matrixA: SimpleMatrix, nb_vp: int, listePropre: ListePropre): ndarray",
+											"text": "+calculerEigenface(matrixA: SimpleMatrix, nbVp: int, listePropre: ListePropre): ndarray",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2487,7 +2487,7 @@
 											"top": 508,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+projection(matrixA: SimpleMatrix, tab_eigenface, nb_eigenface: int): ndarray",
+											"text": "+projection(matrixA: SimpleMatrix, tabEingenface, nbEigenface: int): ndarray",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2505,7 +2505,7 @@
 											"top": 523,
 											"width": 616.5576171875,
 											"height": 13,
-											"text": "+identification(tab_signature: ndarray, image: SimpleMatrix, tab_eigenfaces: ndarray, nb_eigenface: int): int",
+											"text": "+identification(tabSignature: ndarray, image: SimpleMatrix, tabEingenfaces: ndarray, nbEigenface: int): int",
 											"horizontalAlignment": 0
 										}
 									],
@@ -6828,7 +6828,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "nb_valeursPropres",
+							"name": "nbValeursPropres",
 							"visibility": "private",
 							"type": "int"
 						},
@@ -6838,7 +6838,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "tab_eigenfaces",
+							"name": "tabEingenfaces",
 							"visibility": "private",
 							"type": "double[ ][ ]"
 						},
@@ -6881,7 +6881,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "getTab_eigenfaces",
+							"name": "getTabEingenfaces",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -6900,7 +6900,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "getNb_valeurPropre",
+							"name": "getNbValeurPropre",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -6978,7 +6978,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "setTab_igenfaces",
+							"name": "setTabIgenfaces",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -6986,7 +6986,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeQKQ3bWwDm4g="
 									},
-									"name": "tab_eigenfaces",
+									"name": "tabEingenfaces",
 									"type": "ndarray"
 								}
 							]
@@ -6997,7 +6997,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "setNb_valeurPropre",
+							"name": "setnbValeurPropre",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7005,7 +7005,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiImO5jdCr00="
 									},
-									"name": "nb_valeurPropre",
+									"name": "nbValeurPropre",
 									"type": "int"
 								}
 							]
@@ -7035,7 +7035,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "recuperer_ValeurPropre",
+							"name": "recupererValeurPropre",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7072,7 +7072,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "recuperer_VecteurPropre",
+							"name": "recupererVecteurPropre",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7109,7 +7109,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "calculer_ValeurPropre",
+							"name": "calculerValeurPropre",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7137,7 +7137,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "nb_vp_a_garder",
+							"name": "nbVpAGarder",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7145,7 +7145,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiLc6ZldqiGc="
 									},
-									"name": "valeurPropre_Trie",
+									"name": "valeurPropreTrie",
 									"type": "ndarray"
 								},
 								{
@@ -7165,7 +7165,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGeQG8bii1TOmI="
 							},
-							"name": "calculer_eigenface",
+							"name": "calculerEigenface",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7182,7 +7182,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiLj3vVg1udg="
 									},
-									"name": "nb_vp",
+									"name": "nbVp",
 									"type": "int"
 								},
 								{
@@ -7228,7 +7228,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiLs6IFk0BEI="
 									},
-									"name": "tab_eigenface",
+									"name": "tabEingenface",
 									"type": ""
 								},
 								{
@@ -7237,7 +7237,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiLs6IFk0BEI="
 									},
-									"name": "nb_eigenface",
+									"name": "nbEigenface",
 									"type": "int"
 								},
 								{
@@ -7265,7 +7265,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiL1aIlozaOA="
 									},
-									"name": "tab_signature",
+									"name": "tabSignature",
 									"type": "ndarray"
 								},
 								{
@@ -7283,7 +7283,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiL1aIlozaOA="
 									},
-									"name": "tab_eigenfaces",
+									"name": "tabEingenfaces",
 									"type": "ndarray"
 								},
 								{
@@ -7292,7 +7292,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeiL1aIlozaOA="
 									},
-									"name": "nb_eigenface",
+									"name": "nbEigenface",
 									"type": "int"
 								},
 								{
