@@ -186,10 +186,16 @@ public class Main {
 
         Visages visages = new Visages(liste);
         ACP acp = new ACP(visages);
-        
+
+
+		//------- Export du visage moyen et des eigenfaces en PGM -----------------------------------------------
+
+        acp.exporterPGM("sortie_pgm", 92, 112);
+        System.out.println("Visage moyen et eigenfaces exportes dans le dossier sortie_pgm");
+
 
     	//------- Calculer résultat pour une image -----------------------------------------------------------------------------
-        Image imageAanalyser = new Image("donnees/donnee/test/connus/laure/10.pgm");
+        Image imageAanalyser = new Image("donnees/donnee/test/connus/axel/10.pgm");
         //Image imageAanalyser = new Image("donnees/donnee/test/inconnus/jeanne/1.pgm");
         Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
         double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
@@ -205,8 +211,8 @@ public class Main {
 	public static void main(String[] args){
 
         System.out.println("Bienvenue sur notre application de reconnaissance faciale !");
-        //reconnaissanceFaciale();
-        test();
+        reconnaissanceFaciale();
+        //test();
 
 	}
     

@@ -83,7 +83,7 @@ public class PreTraitement {
 	 * @brief Vérifie si une image a la bonne taille selon le traitement manipulé et est en niveau de gris si nécessaire
 	 */
 	public void verifierConformite(String chemin) {
-		double[][] img = chargerImage(chemin)
+		double[][] img = chargerImage(chemin);
 	    if (img == null) {
 	        throw new IllegalArgumentException("Image non chargée (fichier introuvable ou format non supporté).");
 	    }

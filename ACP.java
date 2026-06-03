@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.*;
 
 import org.ejml.simple.SimpleEVD;
 import org.ejml.simple.SimpleMatrix;  // Module qui permet de creer de matrice 
@@ -299,27 +300,27 @@ public class ACP {
 
         /**
         * Notation : 
-        * XH : vecteur propre de A^T*A
-        * VH : eigenface, vecteur propre de A*A^T
+        * xH : vecteur propre de A^T*A
+        * vH : eigenface, vecteur propre de A*A^T
         */
 
         for (int i=0; i<nbVp ; i++){
 
             double lambda = listepropre.valeurPropreTrie[i];  // On récupère la valeur propre
 
-            double[] XH = listepropre.vecteurPropreTrie[i]; // On recupère un vecteur propre
+            double[] xH = listepropre.vecteurPropreTrie[i]; // On recupère un vecteur propre
             
 
             // On met ce vecteur sous la forme d'un double sous la forme d'une matrice colonne
-            SimpleMatrix XHMat = new SimpleMatrix(XH.length,1); 
+            SimpleMatrix xHMat = new SimpleMatrix(xH.length,1); 
 
-            for (int j=0; j<XH.length ; j++){
+            for (int j=0; j<xH.length ; j++){
 
-                XHMat.set(j,0,XH[j]);
+                xHMat.set(j,0,xH[j]);
 
             }
 
-            SimpleMatrix VH = matrixA.mult(XHMat);  // Calcul de A*XH
+            SimpleMatrix vH = matrixA.mult(xHMat);  // Calcul de A*xH
 
 
 
@@ -329,7 +330,7 @@ public class ACP {
 
             for (int j=0; j< taille ; j++){
 
-                tabEingenface[j][i] = VH.get(j,0) / norme;
+                tabEingenface[j][i] = vH.get(j,0) / norme;
             }
         }
 
@@ -440,6 +441,126 @@ public class ACP {
         res[1] = distanceMin;
         return res;
 
+    }
+
+
+
+
+    /**
+     * @author Jules Turchi et Nathan Havard
+     * @param valeurs tableau de valeurs à convertir en niveaux de gris
+     * @param etirer  true pour étirer l'intervalle [min, max] sur [0, 255] (cas des eigenfaces qui
+     *                contiennent des valeurs négatives et de faible amplitude), false pour simplement
+     *                arrondir et borner les valeurs dans [0, 255] (cas du visage moyen déjà en niveaux de gris)
+     * @return un tableau d'entiers contenant les niveaux de gris dans [0, 255]
+     * @brief Convertit un vecteur de valeurs réelles en niveaux de gris affichables dans un PGM.
+     */
+    private static int[] versNiveauxGris(double[] valeurs, boolean etirer){
+
+        int[] gris = new int[valeurs.length];
+
+        if (etirer){
+
+            // On cherche le min et le max pour ramener l'intervalle [min, max] sur [0, 255]
+            double min = valeurs[0];
+            double max = valeurs[0];
+            for (double v : valeurs){
+                if (v < min) min = v;
+                if (v > max) max = v;
+            }
+
+            double ecart = max - min;
+            for (int i = 0; i < valeurs.length; i++){
+                if (ecart == 0){
+                    gris[i] = 0;
+                } else {
+                    gris[i] = (int) Math.round((valeurs[i] - min) / ecart * 255.0);
+                }
+            }
+
+        } else {
+
+            // Valeurs déjà en niveaux de gris : on arrondit et on borne dans [0, 255]
+            for (int i = 0; i < valeurs.length; i++){
+                int valeur = (int) Math.round(valeurs[i]);
+                if (valeur < 0)   valeur = 0;
+                if (valeur > 255) valeur = 255;
+                gris[i] = valeur;
+            }
+        }
+
+        return gris;
+    }
+
+
+
+
+    /**
+     * @author Nathan Havard
+     * @param chemin  chemin du fichier PGM à écrire
+     * @param pixels  tableau des niveaux de gris (dans [0, 255]), rangés ligne par ligne
+     * @param largeur largeur de l'image en pixels
+     * @param hauteur hauteur de l'image en pixels
+     * @brief Écrit un vecteur de pixels dans un fichier PGM binaire (format P5).
+     */
+    private static void ecrirePGM(String chemin, int[] pixels, int largeur, int hauteur){
+
+        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(chemin)))){
+
+            // En-tête PGM : format, dimensions puis valeur max d'un pixel
+            dos.writeBytes("P5\n");
+            dos.writeBytes(largeur + " " + hauteur + "\n");
+            dos.writeBytes("255\n");
+
+            // Corps : un octet par pixel, dans l'ordre de lecture (ligne par ligne)
+            for (int i = 0; i < pixels.length; i++){
+                dos.writeByte(pixels[i]);
+            }
+
+        } catch (IOException e){
+            throw new RuntimeException("Erreur écriture PGM : " + chemin, e);
+        }
+    }
+
+
+
+
+    /**
+     * @author Nathan Havard
+     * @param dossier dossier de sortie dans lequel écrire les fichiers PGM (créé s'il n'existe pas)
+     * @param largeur largeur des images en pixels (92 pour notre base)
+     * @param hauteur hauteur des images en pixels (112 pour notre base)
+     * @brief Transforme le visage moyen et chaque eigenface en fichiers PGM afin de pouvoir les visualiser.
+     *        Le visage moyen est enregistré tel quel (visageMoyen.pgm) et chaque eigenface est étirée sur
+     *        l'échelle des niveaux de gris (eigenface_0.pgm, eigenface_1.pgm, ...).
+     */
+    public void exporterPGM(String dossier, int largeur, int hauteur){
+
+        // Création du dossier de sortie si besoin
+        File rep = new File(dossier);
+        if (!rep.exists()){
+            rep.mkdirs();
+        }
+
+        //------- Visage moyen ----------------------------------------------------------------------------------
+        SimpleMatrix moyen = visages.getvisageMoyen();
+        int nbPixels = moyen.getNumRows();
+
+        double[] pixelsMoyen = new double[nbPixels];
+        for (int i = 0; i < nbPixels; i++){
+            pixelsMoyen[i] = moyen.get(i, 0);
+        }
+        ecrirePGM(dossier + File.separator + "visageMoyen.pgm", versNiveauxGris(pixelsMoyen, false), largeur, hauteur);
+
+        //------- Eigenfaces (une par colonne de tabEingenface) -------------------------------------------------
+        for (int i = 0; i < nbValeurPropre; i++){
+
+            double[] eigenface = new double[nbPixels];
+            for (int j = 0; j < nbPixels; j++){
+                eigenface[j] = tabEingenface[j][i];
+            }
+            ecrirePGM(dossier + File.separator + "eigenface_" + i + ".pgm", versNiveauxGris(eigenface, true), largeur, hauteur);
+        }
     }
 
 
