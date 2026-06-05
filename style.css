@@ -1,0 +1,144 @@
+/* ==========================================================================
+   STYLE GLOBAL DE L'APPLICATION (Thème Clair Moderne)
+   ========================================================================== */
+
+.root {
+    -fx-background-color: #F8FAFC; /* Fond ultra clair de la maquette */
+    -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* --- Barre Haute (Navigation) --- */
+.barre-haute {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1px 0; /* Bordure fine uniquement en bas */
+}
+
+/* --- Boutons du Menu Supérieur --- */
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748B;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #1E293B;
+    -fx-background-radius: 4px;
+}
+
+/* --- Badges d'état (Base chargée, Identifié...) --- */
+.badge-vert {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #15803D;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 4px;
+}
+
+.badge-gris {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #64748B;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 4px;
+}
+
+/* ==========================================================================
+   PANNEAU GAUCHE : ACTIONS & REQUÊTE
+   ========================================================================== */
+
+.zone-gauche {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+}
+
+/* Zone Pointillée Glisser/Déposer */
+.zone-drop {
+    -fx-border-color: #CBD5E1;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-background-color: #F8FAFC;
+}
+
+/* Boutons d'action */
+.btn-principal {
+    -fx-background-color: #6366F1; /* Violet Maquette */
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-principal:hover {
+    -fx-background-color: #4F46E5;
+}
+
+.btn-secondaire {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1E293B;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 6px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-secondaire:hover {
+    -fx-background-color: #F8FAFC;
+}
+
+.btn-valider {
+    -fx-background-color: #10B981; /* Vert Maquette */
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-valider:hover {
+    -fx-background-color: #059669;
+}
+
+/* Champs de texte input */
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-text-fill: #1E293B;
+}
+
+.text-field:focused {
+    -fx-border-color: #6366F1; /* Devient violet quand on clique dessus */
+}
+
+/* ==========================================================================
+   PANNEAU DROIT : RÉSULTATS & STATS
+   ========================================================================== */
+
+/* Fiche d'identité blanche */
+.fiche-identite {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+}
+
+/* Petites Cartes de statistiques (Probabilité, Distance, Erreur) */
+.card-stat {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+/* Conteneurs pour les vignettes d'images en bas */
+.mini-vignette {
+    -fx-background-color: #E2E8F0;
+    -fx-background-radius: 6px;
+}
