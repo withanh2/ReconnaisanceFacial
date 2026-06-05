@@ -1,35 +1,38 @@
-/* ==========================================================================
-   STYLE GLOBAL DE L'APPLICATION (Thème Clair Moderne)
-   ========================================================================== */
+/**
+ * Style global de l'application et de ses composants graphiques.
+ * @author AJIMI Sirine
+ */
 
 .root {
-    -fx-background-color: #F8FAFC; /* Fond ultra clair de la maquette */
+    /* Fond clair pour toute l'application et police */
+    -fx-background-color: #F8FAFC; 
     -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
-/* --- Barre Haute (Navigation) --- */
+/* Barre de navigation tout en haut */
 .barre-haute {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E2E8F0;
-    -fx-border-width: 0 0 1px 0; /* Bordure fine uniquement en bas */
+    -fx-border-width: 0 0 1px 0; /* Ligne de séparation fine uniquement en bas */
 }
 
-/* --- Boutons du Menu Supérieur --- */
+/* Boutons du menu du haut */
 .menu-button {
     -fx-background-color: transparent;
     -fx-text-fill: #64748B;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
-    -fx-cursor: hand;
+    -fx-cursor: hand; /* Change le curseur en main au survol */
 }
 
+/* Effet visuel quand on passe la souris sur un bouton du menu */
 .menu-button:hover {
     -fx-background-color: #F1F5F9;
     -fx-text-fill: #1E293B;
     -fx-background-radius: 4px;
 }
 
-/* --- Badges d'état (Base chargée, Identifié...) --- */
+/* Petit badge vert pour dire que c'est validé ou chargé */
 .badge-vert {
     -fx-background-color: #DCFCE7;
     -fx-text-fill: #15803D;
@@ -38,6 +41,7 @@
     -fx-background-radius: 4px;
 }
 
+/* Petit badge gris pour un état neutre */
 .badge-gris {
     -fx-background-color: #F1F5F9;
     -fx-text-fill: #64748B;
@@ -46,10 +50,7 @@
     -fx-background-radius: 4px;
 }
 
-/* ==========================================================================
-   PANNEAU GAUCHE : ACTIONS & REQUÊTE
-   ========================================================================== */
-
+/* Encadré pour la colonne de gauche (actions et requêtes) */
 .zone-gauche {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 8px;
@@ -57,28 +58,30 @@
     -fx-border-width: 1px;
 }
 
-/* Zone Pointillée Glisser/Déposer */
+/* Zone avec des pointillés pour y glisser-déposer des fichiers */
 .zone-drop {
     -fx-border-color: #CBD5E1;
-    -fx-border-style: dashed;
+    -fx-border-style: dashed; /* Donne l'effet de pointillés */
     -fx-border-width: 2px;
     -fx-border-radius: 6px;
     -fx-background-color: #F8FAFC;
 }
 
-/* Boutons d'action */
+/* Le bouton principal de l'application en violet */
 .btn-principal {
-    -fx-background-color: #6366F1; /* Violet Maquette */
+    -fx-background-color: #6366F1; 
     -fx-text-fill: #FFFFFF;
     -fx-background-radius: 6px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
 
+/* Le bouton violet devient un peu plus foncé quand on passe la souris dessus */
 .btn-principal:hover {
     -fx-background-color: #4F46E5;
 }
 
+/* Bouton secondaire plus discret (fond blanc, texte sombre) */
 .btn-secondaire {
     -fx-background-color: #FFFFFF;
     -fx-text-fill: #1E293B;
@@ -88,23 +91,26 @@
     -fx-cursor: hand;
 }
 
+/* Le bouton secondaire passe sur un fond gris très clair au survol */
 .btn-secondaire:hover {
     -fx-background-color: #F8FAFC;
 }
 
+/* Bouton de validation de couleur verte */
 .btn-valider {
-    -fx-background-color: #10B981; /* Vert Maquette */
+    -fx-background-color: #10B981; 
     -fx-text-fill: #FFFFFF;
     -fx-background-radius: 6px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
 
+/* Le bouton vert devient un peu plus foncé au survol */
 .btn-valider:hover {
     -fx-background-color: #059669;
 }
 
-/* Champs de texte input */
+/* Cases de texte pour que l'utilisateur puisse écrire */
 .text-field {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E2E8F0;
@@ -113,15 +119,12 @@
     -fx-text-fill: #1E293B;
 }
 
+/* La case de texte s'entoure de violet quand on clique dedans pour écrire */
 .text-field:focused {
-    -fx-border-color: #6366F1; /* Devient violet quand on clique dessus */
+    -fx-border-color: #6366F1; 
 }
 
-/* ==========================================================================
-   PANNEAU DROIT : RÉSULTATS & STATS
-   ========================================================================== */
-
-/* Fiche d'identité blanche */
+/* Grand encadré blanc pour afficher la fiche d'identité à droite */
 .fiche-identite {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 8px;
@@ -129,7 +132,7 @@
     -fx-border-width: 1px;
 }
 
-/* Petites Cartes de statistiques (Probabilité, Distance, Erreur) */
+/* Petites cartes blanches pour afficher les chiffres et stats */
 .card-stat {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E2E8F0;
@@ -137,7 +140,7 @@
     -fx-border-radius: 8px;
 }
 
-/* Conteneurs pour les vignettes d'images en bas */
+/* Emplacement pour afficher des miniatures ou petites images en bas */
 .mini-vignette {
     -fx-background-color: #E2E8F0;
     -fx-background-radius: 6px;
