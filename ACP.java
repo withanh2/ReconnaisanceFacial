@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.*;
+import org.apache.commons.math3.distribution.FDistribution;
 
 import org.ejml.simple.SimpleEVD;
 import org.ejml.simple.SimpleMatrix;  // Module qui permet de creer de matrice 
@@ -562,7 +563,82 @@ public class ACP {
             ecrirePGM(dossier + File.separator + "eigenface_" + i + ".pgm", versNiveauxGris(eigenface, true), largeur, hauteur);
         }
     }
+    
+    /**
+     * 
+     * @param imageTest image test centrée sous forme de vecteur colonne
+     * @param tabEigenface tableau 2D contenant les eigenfaces
+     * @param nbEigenface nombre d'eigenfaces à utiliser pour la projection
+     * @return tableau de double contenant les coordonnées beta du visage dans l'espace ACP
+     * @brief Calcule les coordonnées de projection d'un visage test dans la base ACP.
+     * 		  Pour chaque eigenface i, calcule le produit scalaire entre l'image et l'eigenface.
+     */
+    
+    public static double[] calculerBeta(SimpleMatrix imageTest, double[][] tabEigenface, int nbEigenface) {
+    	int nbPixels = imageTest.numRows();
+        double[] beta = new double[nbEigenface];
 
+        for (int i = 0; i < nbEigenface; i++) {
+            double prodScal = 0.0;
+            for (int k = 0; k < nbPixels; k++) {
+                prodScal += tabEigenface[k][i] * imageTest.get(k, 0);
+            }
+            beta[i] = prodScal;
+        }
+        return beta;
+    }
+ 
+    /**
+     * 
+     * @param listepropre objet ListePropre contenant les valeurs propres triées par ordre décroissant
+     * @param nbEigenface nombre de valeurs propres à extraire
+     * @return tableau de double contenant les nbEigenface premières valeurs propres.
+     * @brief Extrait les nbEigenface premières valeurs propres depuis la liste triée.
+     *        Ces valeurs propres lambda représentent la variance de chaque composante principale
+     *        et sont utilisées pour normaliser les scores dans le calcul de la statistique T².
+     */
+    public static double[] calculerLambda(ListePropre listepropre, int nbEigenface) {
+        double[] lambda = new double[nbEigenface];
+        for (int i = 0; i < nbEigenface; i++) {
+            lambda[i] = listepropre.valeurPropreTrie[i];
+        }
+        return lambda;
+    }
+    
+    /**
+     * 
+     * @param beta tableau de double contenant les coordonnées de projection du visage dans l'espace ACP.
+     * @param lambda tableau de double contenant les variances des composantes principales (valeurs propres).
+     * @return la statistique de Hotelling T² sous forme de double
+     * @brief Calcule la statistique de Hotelling T² : 
+     *        Cette statistique mesure si le visage testé appartient à la région de l'espace ACP
+     *        habituellement occupée par les visages de la base de référence.
+     *        Un T² faible indique un visage reconnu, un T² élevé indique un visage inconnu.
+     */
+
+    public static double calculStat(double[] beta, double[] lambda) {
+    	double T2 = 0.0;
+    	int K = beta.length;
+    	for (int i=0; i<K; i++) {
+    		T2 += (beta[i]*beta[i]) / lambda[i];
+    	}
+    	return T2;
+    }
+    
+    /**
+     * 
+     * @param n nombre d'images dans la base d'apprentissage
+     * @param K nombre de composantes retenues (nbEigenface)
+     * @return le seuil théorique T²_alpha
+     * @brief Calcule le seuil théorique de la statistique de Hotelling T²
+     */
+    public double calculerSeuilTheorique(int n) {
+        return (this.nbValeurPropre * (n - 1.0)) / (n - this.nbValeurPropre);
+    }
+}	
+    
+    
+   
 
 
 
@@ -573,4 +649,4 @@ public class ACP {
 
 
     
-}
+
