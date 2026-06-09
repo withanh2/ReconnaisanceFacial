@@ -374,10 +374,10 @@ public class Main {
 
 
 
-    public static double calculerErreur(double[] J, double[] Jp) {
+    public static double calculerErreur(double[] j, double[] jp) {
     	double somme = 0.0;
-    	for (int i=0;i<J.length; i++) {
-    		somme += (J[i]-Jp[i])*(J[i]-Jp[i]);
+    	for (int i=0;i<j.length; i++) {
+    		somme += (j[i]-jp[i])*(j[i]-jp[i]);
     	}
     	return Math.sqrt(somme);
     }
@@ -391,18 +391,18 @@ public class Main {
      * chaque colonne est une eigenface
      * @return le visage reconstruit Jp
      */
-    public static double[] reconstruire(double[] J, double[][] eigenfaces) {
-        double[] Jp = new double[J.length];
+    public static double[] reconstruire(double[] j, double[][] eigenfaces) {
+        double[] jp = new double[j.length];
         for (int i = 0; i < eigenfaces[0].length; i++) {
             double coord = 0.0;
-            for (int j = 0; j < J.length; j++) {
-                coord += J[j] * eigenfaces[j][i];
+            for (int k = 0; k < j.length; k++) {
+                coord += j[k] * eigenfaces[k][i];
             }
-            for (int j = 0; j < J.length; j++) {
-                Jp[j] += coord * eigenfaces[j][i];
+            for (int k = 0; k < j.length; k++) {
+                jp[k] += coord * eigenfaces[k][i];
             }
         }
-        return Jp;
+        return jp;
     }
     /**
      * @author Marie Santini
@@ -431,8 +431,8 @@ public class Main {
     public static double[] calculerErreurValidation(double[][] visagesValidation, double[][] eigenfaces) {
     	double[] erreurs = new double[visagesValidation.length];
     	for (int k = 0; k<visagesValidation.length; k++) {
-    		double[] Jp = reconstruire(visagesValidation[k], eigenfaces);
-            erreurs[k] = calculerErreur(visagesValidation[k], Jp);
+    		double[] jp = reconstruire(visagesValidation[k], eigenfaces);
+            erreurs[k] = calculerErreur(visagesValidation[k], jp);
         }
         return erreurs;
     }
@@ -497,12 +497,12 @@ public class Main {
      */
 
     public static double calculStat(double[] beta, double[] lambda) {
-    	double T2 = 0.0;
-    	int K = beta.length;
-    	for (int i=0; i<K; i++) {
-    		T2 += (beta[i]*beta[i]) / lambda[i];
+    	double t2 = 0.0;
+    	int k = beta.length;
+    	for (int i=0; i<k; i++) {
+    		t2 += (beta[i]*beta[i]) / lambda[i];
     	}
-    	return T2;
+    	return t2;
     }
     
     /**
@@ -512,8 +512,8 @@ public class Main {
      * @return le seuil théorique T²_alpha
      * @brief Calcule le seuil théorique de la statistique de Hotelling T²
      */
-    public static double calculerSeuilTheorique(int n, int K) {
-        return (K * (n - 1.0)) / (n - K);
+    public static double calculerSeuilTheorique(int n, int k) {
+        return (k * (n - 1.0)) / (n - k);
     }
 
 
