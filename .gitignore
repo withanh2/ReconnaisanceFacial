@@ -3,3 +3,6 @@ donnees/
 
 # Fichiers compiles Java
 *.class
+
+# Native JavaFX WebKit (107 Mo, depasse la limite GitHub, inutilisee)
+lib/javafx/libjfxwebkit.so
