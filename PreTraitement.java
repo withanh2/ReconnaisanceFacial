@@ -11,9 +11,9 @@ import java.io.IOException;
 
 public class PreTraitement {
 
-	int longueurCible;
-	int hauteurCible;
-	boolean estNivGris;
+	private int longueurCible;
+	private int hauteurCible;
+	private boolean estNivGris;
 	
 	/** 
 	 * @author Maxime Le Glanaër
@@ -64,17 +64,40 @@ public class PreTraitement {
 	/** 
 	 * @author Maxime Le Glanaër
 	 * @param String chemin le chemin vers l'image que l'on doit vérifier
-	 * @brief charge une image dans le buffer pour pouvoir la manipuler.
+	 * @return SimpleMatrix versMatriceGris(img) la matrice en niveau de gris conforme au model de la BDD
+	 * @brief charge une image pour pouvoir la manipuler.
 	 */
-	public static double[][] chargerImage(String chemin) throws IOException {
-    String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
-    return switch (ext) {
-        case "pgm" -> lirePGM(chemin);
-        case "jpg", "jpeg","png", "bmp"  -> {
-            BufferedImage img = ImageIO.read(new File(chemin));
-        }
-        default -> throw new UnsupportedOperationException("Format non supporté : " + ext);
-    	};
+	public static SimpleMatrix chargerImage(String chemin) throws IOException {
+    	BufferedImage img = ImageIO.read(new File(chemin));
+    	if (img == null) {
+        	throw new UnsupportedOperationException("Format non supporté : " + chemin);
+    	}
+    	return versMatriceGris(img);
+	}
+
+
+	/**
+ 	* @author Maxime Le Glanaër
+ 	* @param BufferedImage img l'image RGB à convertir
+ 	* @return SimpleMatrix la matrice de pixels en niveaux de gris, valeurs dans [0.0, 255.0]
+ 	* @brief Convertit une BufferedImage RGB en SimpleMatrix de niveaux de gris
+ 	* en appliquant la formule de luminance standard ITU-R BT.601.
+ 	*/
+	public static SimpleMatrix versMatriceGris(BufferedImage img) {
+    	int hauteur = img.getHeight();
+    	int largeur  = img.getWidth();
+    	SimpleMatrix matrice = new SimpleMatrix(hauteur, largeur);
+    	for (int y = 0; y < hauteur; y++) {
+        	for (int x = 0; x < largeur; x++) {
+            	int pixel = img.getRGB(x, y);
+            	int r = (pixel >> 16) & 0xFF;
+            	int g = (pixel >> 8) & 0xFF;
+            	int b = (pixel) & 0xFF;
+            	double gris = (0.299 * r + 0.587 * g + 0.114 * b);
+            	matrice.set(y, x, gris);
+        	}
+    	}
+    	return matrice;
 	}
 	
 	/** 
@@ -82,26 +105,22 @@ public class PreTraitement {
 	 * @param BufferedImage img l'image que l'on doit vérifier
 	 * @brief Vérifie si une image a la bonne taille selon le traitement manipulé et est en niveau de gris si nécessaire
 	 */
-	public void verifierConformite(String chemin) {
-		double[][] img = chargerImage(chemin);
+	public void verifierConformite(String chemin) throws IOException {
+		SimpleMatrix img = chargerImage(chemin);
 	    if (img == null) {
 	        throw new IllegalArgumentException("Image non chargée (fichier introuvable ou format non supporté).");
 	    }
-		int hauteur = img.length;
-		int largeur  = img[0].length;
+		int hauteur = img.getNumRows();
+		int largeur  = img.getNumCols();
 	    if (largeur != this.getLongueurCible() || hauteur != this.getHauteurCible()) {
-	        throw new IllegalArgumentException("Dimensions incorrectes : attendu " + this.getLongueurCible() + "×" + this.getHauteurCible() + ", reçu " + img.getWidth() + "×" + img.getHeight());
+	        throw new IllegalArgumentException("Dimensions incorrectes : attendu " + this.getLongueurCible() + "×" + this.getHauteurCible() + ", reçu " + largeur + "×" + hauteur);
 	    }
 	    if (this.getEstNivGris()){
 	    	for (int i = 0; i < hauteur; i++) {
 		        for (int j = 0; j < largeur; j++) {
-		            int pixel = img.getRGB(i, j);
-		            int r = (pixel >> 16) & 0xFF;
-		            int g = (pixel >> 8) & 0xFF;
-		            int b = (pixel) & 0xFF;
-		            if (r != g || g!=b) {
-		            	throw new IllegalArgumentException("L'image n'est pas en niveau de gris, inutilisable");
-		            }
+		            if (img.get(i, j) < 0.0 || img.get(i, j) > 255.0) {
+    					throw new IllegalArgumentException("Valeur de pixel hors de [0,255] en (" + i + "," + j + ")");
+					}
 				}
 			}
 	    }

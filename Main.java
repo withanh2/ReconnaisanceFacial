@@ -248,34 +248,24 @@ public class Main {
         System.out.println("Erreurs de reconstruction : " + Arrays.toString(erreur));
 
 
-        // ---------- CRITÈRE 3 ---------------------------------------------------------------------
+        // ---------- CRITÈRE 3 : Hotelling T² (seuil calibré empiriquement) -----------------------
 
-        // Image test déjà centrée par rapport au visage moyen (n x 1)
-        SimpleMatrix imageTestCentre = visagesImageAnalyser.getImageAanalyser();
-
-        // Les valeurs propres ne sont pas stockées dans l'ACP -> on les recalcule depuis A^T*A
+        // Valeurs propres recalculées depuis A^T*A (non stockées dans l'ACP)
         ListePropre listepropre = ACP.calculerValeurPropre(visages.getMatrixD());
 
-        // 1) Coordonnées beta du visage dans la base ACP
-        double[] beta = calculerBeta(imageTestCentre, acp.getTabEingenface(), acp.getNbValeurPropre());
+        // T² du visage à analyser
+        double T2 = calculerT2(visagesImageAnalyser.getImageAanalyser(), acp, listepropre);
 
-        // 2) Variances lambda (valeurs propres retenues)
-        double[] lambda = calculerLambda(listepropre, acp.getNbValeurPropre());
+        // Seuil calibré sur les visages connus/inconnus de test (comme les critères 1 et 2)
+        double seuilT2 = calculSeuilCritereT2(visages, acp);
 
-        // 3) Statistique T²
-        double T2 = calculStat(beta, lambda);
-
-        // 4) Seuil théorique T²_alpha  (n = nb d'images d'apprentissage, K = nb de composantes)
-        int n = liste.size();
-        double seuilT2 = calculerSeuilTheorique(n, acp.getNbValeurPropre());
-
-        // 5) Décision
-        System.out.printf("T2 = %.3f   |   seuil theorique = %.3f%n", T2, seuilT2);
+        // Décision
+        System.out.printf("T2 = %.3f   |   seuil calibre = %.3f%n", T2, seuilT2);
         if (T2 > seuilT2) {
             System.out.println("=> Visage INCONNU (T2 > seuil)");
         } else {
             System.out.println("=> Visage connu (T2 <= seuil)");
-}
+        }
 
 
 
@@ -517,16 +507,70 @@ public class Main {
     }
 
 
+    /**
+     * @author Marie Santini
+     * @param imageCentre image test déjà centrée (vecteur colonne n x 1)
+     * @param acp l'ACP contenant les eigenfaces et le nombre de composantes retenues
+     * @param listepropre les valeurs propres triées (variances des composantes)
+     * @return la statistique de Hotelling T² du visage
+     * @brief Enchaine projection (beta), recuperation des variances (lambda) et calcul du T².
+     */
+    public static double calculerT2(SimpleMatrix imageCentre, ACP acp, ListePropre listepropre) {
+        double[] beta = calculerBeta(imageCentre, acp.getTabEingenface(), acp.getNbValeurPropre());
+        double[] lambda = calculerLambda(listepropre, acp.getNbValeurPropre());
+        return calculStat(beta, lambda);
+    }
+
+
+    /**
+     * @author Marie Santini
+     * @param visages objet Visages contenant la base d'apprentissage (visage moyen)
+     * @param acp l'ACP calculee sur la base
+     * @return le seuil de decision sur le T², calibre empiriquement
+     * @brief Calcule le T² des visages connus et inconnus de test, puis renvoie un seuil
+     *        qui separe les deux (milieu entre le plus grand T² connu et le plus petit T² inconnu).
+     *        Approche identique au critere 1 : evite la loi de Fisher et le probleme d'echelle.
+     */
+    public static double calculSeuilCritereT2(Visages visages, ACP acp) {
+
+        // Valeurs propres (non stockees dans l'ACP) recalculees depuis A^T*A
+        ListePropre listepropre = ACP.calculerValeurPropre(visages.getMatrixD());
+
+        // --------- T² POUR LES IMAGES CONNUES ---------
+        List<Image> listeImgConnues = chargerImages("donnees/donnee/test/connus");
+        List<Double> listeT2Connues = new ArrayList<>();
+        for (int i = 0; i < listeImgConnues.size(); i++) {
+            SimpleMatrix centre = new Visages(listeImgConnues.get(i), visages).getImageAanalyser();
+            listeT2Connues.add(calculerT2(centre, acp, listepropre));
+        }
+        double maxT2Connues = Collections.max(listeT2Connues);
+
+        // --------- T² POUR LES IMAGES INCONNUES ---------
+        List<Image> listeImgInconnues = chargerImages("donnees/donnee/test/inconnus");
+        List<Double> listeT2Inconnues = new ArrayList<>();
+        for (int i = 0; i < listeImgInconnues.size(); i++) {
+            SimpleMatrix centre = new Visages(listeImgInconnues.get(i), visages).getImageAanalyser();
+            listeT2Inconnues.add(calculerT2(centre, acp, listepropre));
+        }
+        double minT2Inconnues = Collections.min(listeT2Inconnues);
+
+        // --------- SEUIL : milieu entre les deux ---------
+        return (maxT2Connues + minT2Inconnues) / 2.0;
+    }
+
+
+
+
+
+
+
+
 
 
     //----------------------------------------------------------------------------------------------------------------------------
     //------- FONCTION MAIN ------------------------------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------------
 	
-
-
-
-
     
     
 	public static void main(String[] args){
