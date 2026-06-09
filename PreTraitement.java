@@ -64,25 +64,22 @@ public class PreTraitement {
 	/** 
 	 * @author Maxime Le Glanaër
 	 * @param String chemin le chemin vers l'image que l'on doit vérifier
-	 * @brief charge une image dans le buffer pour pouvoir la manipuler.
+	 * @return SimpleMatrix versMatriceGris(img) la matrice en niveau de gris conforme au model de la BDD
+	 * @brief charge une image pour pouvoir la manipuler.
 	 */
 	public static SimpleMatrix chargerImage(String chemin) throws IOException {
-    String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
-    return switch (ext) {
-        case "pgm" -> lirePGM(chemin);
-        case "jpg", "jpeg","png", "bmp"  -> {
-            BufferedImage img = ImageIO.read(new File(chemin));
-			yield versMatriceGris(img);
-        }
-        default -> throw new UnsupportedOperationException("Format non supporté : " + ext);
-    	};
+    	BufferedImage img = ImageIO.read(new File(chemin));
+    	if (img == null) {
+        	throw new UnsupportedOperationException("Format non supporté : " + chemin);
+    	}
+    	return versMatriceGris(img);
 	}
 
 
 	/**
  	* @author Maxime Le Glanaër
  	* @param BufferedImage img l'image RGB à convertir
- 	* @return SimpleMatrix la matrice de pixels en niveaux de gris, valeurs dans [0.0, 1.0]
+ 	* @return SimpleMatrix la matrice de pixels en niveaux de gris, valeurs dans [0.0, 255.0]
  	* @brief Convertit une BufferedImage RGB en SimpleMatrix de niveaux de gris
  	* en appliquant la formule de luminance standard ITU-R BT.601.
  	*/
@@ -122,7 +119,7 @@ public class PreTraitement {
 	    	for (int i = 0; i < hauteur; i++) {
 		        for (int j = 0; j < largeur; j++) {
 		            if (img.get(i, j) < 0.0 || img.get(i, j) > 255.0) {
-    					throw new IllegalArgumentException("Valeur de pixel hors de [0,1] en (" + i + "," + j + ")");
+    					throw new IllegalArgumentException("Valeur de pixel hors de [0,255] en (" + i + "," + j + ")");
 					}
 				}
 			}
