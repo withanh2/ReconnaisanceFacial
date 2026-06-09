@@ -5,7 +5,10 @@ import org.ejml.dense.row.CommonOps_DDRM;
 import org.ejml.dense.row.factory.DecompositionFactory_DDRM;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 
@@ -68,11 +71,52 @@ public class PreTraitement {
 	 * @brief charge une image pour pouvoir la manipuler.
 	 */
 	public static SimpleMatrix chargerImage(String chemin) throws IOException {
+		String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
+		if (ext.equals("pgm")) {
+			return lirePGM(chemin);
+		}
     	BufferedImage img = ImageIO.read(new File(chemin));
     	if (img == null) {
         	throw new UnsupportedOperationException("Format non supporté : " + chemin);
     	}
     	return versMatriceGris(img);
+	}
+
+	/**
+	 * @author Nathan havard
+	 * @param String chemin le chemin vers le fichier PGM (P5)
+	 * @return SimpleMatrix matrice (hauteur x largeur) des niveaux de gris [0,255]
+	 * @brief Lit un PGM binaire (P5) en sautant son en-tête (magic, dimensions, valeur max).
+	 */
+	private static SimpleMatrix lirePGM(String chemin) throws IOException {
+		try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(chemin)))) {
+			String magic = lireLigneUtile(dis);
+			if (magic == null || !magic.startsWith("P5")) {
+				throw new IOException("Format PGM non supporté (attendu P5).");
+			}
+			String[] dim = lireLigneUtile(dis).trim().split("\\s+");
+			int largeur = Integer.parseInt(dim[0]);
+			int hauteur = Integer.parseInt(dim[1]);
+			lireLigneUtile(dis); // valeur max (255), ignorée
+
+			SimpleMatrix matrice = new SimpleMatrix(hauteur, largeur);
+			for (int y = 0; y < hauteur; y++) {
+				for (int x = 0; x < largeur; x++) {
+					matrice.set(y, x, dis.readUnsignedByte());
+				}
+			}
+			return matrice;
+		}
+	}
+
+	/** Prochaine ligne d'en-tête non vide et non commentée (#). */
+	@SuppressWarnings("deprecation")
+	private static String lireLigneUtile(DataInputStream dis) throws IOException {
+		String ligne = dis.readLine();
+		while (ligne != null && (ligne.isEmpty() || ligne.startsWith("#"))) {
+			ligne = dis.readLine();
+		}
+		return ligne;
 	}
 
 
