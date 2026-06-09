@@ -51,7 +51,6 @@ public class Image{
      */
     private SimpleMatrix lirePGM(String chemin){
         try(DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(chemin)))){
-            String format = dis.readLine();
             String ligne = dis.readLine();
             while(ligne.startsWith("#")){
                 ligne = dis.readLine();
@@ -59,7 +58,6 @@ public class Image{
             String[] dimensions = ligne.split(" ");
             int largeur = Integer.parseInt(dimensions[0]);
             int hauteur = Integer.parseInt(dimensions[1]);
-            int maxVal = Integer.parseInt(dis.readLine().trim());
 
             double[] pixels = new double[largeur * hauteur];
             for(int i = 0; i < pixels.length; i++){

@@ -397,10 +397,6 @@ public class ACP {
 	*/
     public static double[] identification(double[][] tabSignature, SimpleMatrix image, double[][] tabEingenface, int nbEigenface){
 
-        // On récupère la dimension de l'image
-        int nbCol = image.numCols(); // Nombre d'image dans la matrice
-        int nbLigne =  image.numRows(); // Nombre de pixel par image dans la matrice
-
         // On récupère les infos sur les signatures
         int nbImageBase = tabSignature[0].length;
 
