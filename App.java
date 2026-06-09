@@ -1,5 +1,3 @@
-package application; // Déclaration du package dans lequel se trouve la classe
-
 // Importations des composants fondamentaux de JavaFX pour l'application et les fenêtres
 import javafx.application.Application;
 import javafx.geometry.Insets;

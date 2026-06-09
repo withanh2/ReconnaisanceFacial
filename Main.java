@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.File;
+import java.util.Collections;
+
+
 
 
 public class Main {
@@ -199,6 +202,86 @@ public class Main {
         //Image imageAanalyser = new Image("donnees/donnee/test/inconnus/jeanne/1.pgm");
         Visages visagesImageAnalyser = new Visages(imageAanalyser, visages);
         double[] res = ACP.identification(acp.getOmega(), visagesImageAnalyser.getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
+        
+        
+
+
+
+
+        //--------CRITERE 1 ---------------------------------------------------------------------------
+        
+        double seuil = calculSeuilCritereTeta(visages,acp);
+        System.out.println("Seuil : " +  seuil);
+
+
+
+
+
+
+        //--------CRITERE 2 ---------------------------------------------------------------------------
+
+        // 1 On charge les images de validation (ici les "connus")
+        List<Image> listeValidation = chargerImages("donnees/donnee/test/connus");
+
+        // 2 On construit la matrice (l x n) : une ligne = un visage centré
+        double[][] visagesValidation = new double[listeValidation.size()][];
+        for (int k = 0; k < listeValidation.size(); k++) {
+
+            // centrage par rapport au visage moyen de la base (comme dans la méthode 1)
+            SimpleMatrix centre = new Visages(listeValidation.get(k), visages).getImageAanalyser(); // (n x 1)
+
+            int nbPixels = centre.numRows();
+            double[] vecteur = new double[nbPixels];
+            for (int p = 0; p < nbPixels; p++) {
+                vecteur[p] = centre.get(p, 0);      // colonne -> tableau
+            }
+            visagesValidation[k] = vecteur;
+        }
+
+        // 3 LA ligne que tu cherches :
+        double[] erreur = calculerErreurValidation(visagesValidation, acp.getTabEingenface());
+
+        // 4 (suite logique) seuil Or au 95e percentile
+        double seuilReconstruction = calculerSeuil(erreur, 95.0);
+
+        System.out.println("Seuil teta : " + seuilReconstruction);
+        System.out.println("Erreurs de reconstruction : " + Arrays.toString(erreur));
+
+
+        // ---------- CRITÈRE 3 ---------------------------------------------------------------------
+
+        // Image test déjà centrée par rapport au visage moyen (n x 1)
+        SimpleMatrix imageTestCentre = visagesImageAnalyser.getImageAanalyser();
+
+        // Les valeurs propres ne sont pas stockées dans l'ACP -> on les recalcule depuis A^T*A
+        ListePropre listepropre = ACP.calculerValeurPropre(visages.getMatrixD());
+
+        // 1) Coordonnées beta du visage dans la base ACP
+        double[] beta = calculerBeta(imageTestCentre, acp.getTabEingenface(), acp.getNbValeurPropre());
+
+        // 2) Variances lambda (valeurs propres retenues)
+        double[] lambda = calculerLambda(listepropre, acp.getNbValeurPropre());
+
+        // 3) Statistique T²
+        double T2 = calculStat(beta, lambda);
+
+        // 4) Seuil théorique T²_alpha  (n = nb d'images d'apprentissage, K = nb de composantes)
+        int n = liste.size();
+        double seuilT2 = calculerSeuilTheorique(n, acp.getNbValeurPropre());
+
+        // 5) Décision
+        System.out.printf("T2 = %.3f   |   seuil theorique = %.3f%n", T2, seuilT2);
+        if (T2 > seuilT2) {
+            System.out.println("=> Visage INCONNU (T2 > seuil)");
+        } else {
+            System.out.println("=> Visage connu (T2 <= seuil)");
+}
+
+
+
+
+
+
         System.out.println("\nOn analyser notre image choisi");
         System.out.println("Voici l'indice_min : " + res[0]);
         System.out.println("Voici la distance min : " + res[1]);
@@ -207,6 +290,244 @@ public class Main {
         System.out.println("Personne reconnue : " + imageReconnue.getIdPersonne());
 
     }
+
+
+
+
+
+
+
+
+
+
+
+    //----------------------------------------------------------------------------------------------------------------------------
+    //------- CRITERE 1 ----------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
+		
+
+    /**
+	 * @author Jules Turchi
+     * @param acp image déjà traitée ie sous forme de vecteur et centrée 
+	 * @param visages tableau contenant les eigenfaces
+     * @return un liste de double qui correspond au seuil
+	 * @brief Fonction qui calcule le seuil avec la méthode 1 du critère teta 
+	*/
+    public static double calculSeuilCritereTeta(Visages visages ,ACP acp){
+
+
+        // --------- DISTANCE POUR LES IMAGES CONNUES ---------------------------------------------------------------------------------------------------------------------------------------------
+        List<Image> listeImgConnues = chargerImages("donnees/donnee/test/connus");
+        
+        List<Visages> listeVisagesConnues = new ArrayList<>();
+
+        List<Double> listeDistanceConnues = new ArrayList<>();
+
+
+        for( int i=0 ; i<listeImgConnues.size() ; i++){
+
+
+            listeVisagesConnues.add(new Visages(listeImgConnues.get(i), visages));
+            double[] res = acp.identification(acp.getOmega(), listeVisagesConnues.get(i).getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
+            listeDistanceConnues.add(res[1]);
+        
+        }
+        double maxDistConnues = Collections.max(listeDistanceConnues);
+
+
+
+        // --------- DISTANCE POUR LES IMAGES INCONNUES ---------------------------------------------------------------------------------------------------------------------------------------------
+        List<Image> listeImgInconnues = chargerImages("donnees/donnee/test/inconnus");
+
+        List<Visages> listeVisagesInconnues = new ArrayList<>();
+
+        List<Double> listeDistanceInconnues = new ArrayList<>();
+
+
+        for( int i=0 ; i<listeImgInconnues.size() ; i++){
+
+            listeVisagesInconnues.add(new Visages(listeImgInconnues.get(i), visages));
+            double[] res = acp.identification(acp.getOmega(), listeVisagesInconnues.get(i).getImageAanalyser(), acp.getTabEingenface(),acp.getNbValeurPropre());
+            listeDistanceInconnues.add(res[1]);
+        }
+        double maxDistInconnues = Collections.min(listeDistanceInconnues);
+
+
+
+        // --------- CALCUL SEUIL ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        double seuil = (maxDistConnues + maxDistInconnues) / 2.0;
+
+        return seuil;
+    }
+
+    
+    
+
+
+
+    
+    
+    //----------------------------------------------------------------------------------------------------------------------------
+    //------- CRITERE 2 ----------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
+		
+
+
+
+    public static double calculerErreur(double[] J, double[] Jp) {
+    	double somme = 0.0;
+    	for (int i=0;i<J.length; i++) {
+    		somme += (J[i]-Jp[i])*(J[i]-Jp[i]);
+    	}
+    	return Math.sqrt(somme);
+    }
+
+
+
+    /**
+     * @author Marie Santini
+     * @param J le visage centré à reconstruire (vecteur de taille n)
+     * @param eigenfaces matrice (n x p) des eigenfaces
+     * chaque colonne est une eigenface
+     * @return le visage reconstruit Jp
+     */
+    public static double[] reconstruire(double[] J, double[][] eigenfaces) {
+        double[] Jp = new double[J.length];
+        for (int i = 0; i < eigenfaces[0].length; i++) {
+            double coord = 0.0;
+            for (int j = 0; j < J.length; j++) {
+                coord += J[j] * eigenfaces[j][i];
+            }
+            for (int j = 0; j < J.length; j++) {
+                Jp[j] += coord * eigenfaces[j][i];
+            }
+        }
+        return Jp;
+    }
+    /**
+     * @author Marie Santini
+     * @param erreurs tableau des erreurs de reconstruction des visages de validation
+     * @param percentile le percentile choisi, 95.0% ou 99.0%
+     * @return le seuil Or
+     */
+    public static double calculerSeuil(double[] erreurs, double percentile) {
+        double[] triees = erreurs.clone();
+        Arrays.sort(triees);
+        int index = (int) Math.ceil((percentile / 100.0) * triees.length) - 1;
+        return triees[index];
+    }
+
+
+
+
+    /**
+     * @author Marie Santini
+     * @param visagesValidation matrice (l x n) contenant les l visages de validation centrés,
+     * chaque ligne est un visage de n pixels
+     * @param eigenfaces matrice (n x p) des eigenfaces,
+     * chaque colonne est une eigenface
+     * @return tableau de taille l contenant les erreurs
+     */
+    public static double[] calculerErreurValidation(double[][] visagesValidation, double[][] eigenfaces) {
+    	double[] erreurs = new double[visagesValidation.length];
+    	for (int k = 0; k<visagesValidation.length; k++) {
+    		double[] Jp = reconstruire(visagesValidation[k], eigenfaces);
+            erreurs[k] = calculerErreur(visagesValidation[k], Jp);
+        }
+        return erreurs;
+    }
+
+
+
+    //----------------------------------------------------------------------------------------------------------------------------
+    //-------CRITERE 3 ----------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
+	
+
+    /**
+     * @author Marie Santini
+     * @param imageTest image test centrée sous forme de vecteur colonne
+     * @param tabEigenface tableau 2D contenant les eigenfaces
+     * @param nbEigenface nombre d'eigenfaces à utiliser pour la projection
+     * @return tableau de double contenant les coordonnées beta du visage dans l'espace ACP
+     * @brief Calcule les coordonnées de projection d'un visage test dans la base ACP.
+     * 		  Pour chaque eigenface i, calcule le produit scalaire entre l'image et l'eigenface.
+     */
+    
+    public static double[] calculerBeta(SimpleMatrix imageTest, double[][] tabEigenface, int nbEigenface) {
+    	int nbPixels = imageTest.numRows();
+        double[] beta = new double[nbEigenface];
+
+        for (int i = 0; i < nbEigenface; i++) {
+            double prodScal = 0.0;
+            for (int k = 0; k < nbPixels; k++) {
+                prodScal += tabEigenface[k][i] * imageTest.get(k, 0);
+            }
+            beta[i] = prodScal;
+        }
+        return beta;
+    }
+ 
+    /**
+     * @author Marie Santini
+     * @param listepropre objet ListePropre contenant les valeurs propres triées par ordre décroissant
+     * @param nbEigenface nombre de valeurs propres à extraire
+     * @return tableau de double contenant les nbEigenface premières valeurs propres.
+     * @brief Extrait les nbEigenface premières valeurs propres depuis la liste triée.
+     *        Ces valeurs propres lambda représentent la variance de chaque composante principale
+     *        et sont utilisées pour normaliser les scores dans le calcul de la statistique T².
+     */
+    public static double[] calculerLambda(ListePropre listepropre, int nbEigenface) {
+        double[] lambda = new double[nbEigenface];
+        for (int i = 0; i < nbEigenface; i++) {
+            lambda[i] = listepropre.valeurPropreTrie[i];
+        }
+        return lambda;
+    }
+    
+    /**
+     * @author Marie Santini
+     * @param beta tableau de double contenant les coordonnées de projection du visage dans l'espace ACP.
+     * @param lambda tableau de double contenant les variances des composantes principales (valeurs propres).
+     * @return la statistique de Hotelling T² sous forme de double
+     * @brief Calcule la statistique de Hotelling T² : 
+     *        Cette statistique mesure si le visage testé appartient à la région de l'espace ACP
+     *        habituellement occupée par les visages de la base de référence.
+     *        Un T² faible indique un visage reconnu, un T² élevé indique un visage inconnu.
+     */
+
+    public static double calculStat(double[] beta, double[] lambda) {
+    	double T2 = 0.0;
+    	int K = beta.length;
+    	for (int i=0; i<K; i++) {
+    		T2 += (beta[i]*beta[i]) / lambda[i];
+    	}
+    	return T2;
+    }
+    
+    /**
+     * @author Marie Santini
+     * @param n nombre d'images dans la base d'apprentissage
+     * @param K nombre de composantes retenues (nbEigenface)
+     * @return le seuil théorique T²_alpha
+     * @brief Calcule le seuil théorique de la statistique de Hotelling T²
+     */
+    public static double calculerSeuilTheorique(int n, int K) {
+        return (K * (n - 1.0)) / (n - K);
+    }
+
+
+
+
+    //----------------------------------------------------------------------------------------------------------------------------
+    //------- FONCTION MAIN ------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------
+	
+
+
+
+
+    
     
 	public static void main(String[] args){
 
