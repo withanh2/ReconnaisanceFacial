@@ -17,7 +17,27 @@ cd ReconnaisanceFacial
 unzip donnees.zip -d donnees        # décompresse les images dans donnees/
 ```
 
-## Lancer l'interface graphique
+## Jar exécutable (rendu)
+
+Construire le jar :
+
+```bash
+./build.sh        # compile et produit ReconnaissanceFaciale.jar
+```
+
+Lancer le jar (interface graphique) :
+
+```bash
+./run.sh          # à exécuter depuis la racine du projet
+```
+
+> Le jar contient les classes du projet ; les bibliothèques restent dans `lib/`.
+> JavaFX ne peut pas être lancé par simple double-clic : utilisez `run.sh`, qui
+> ajoute les modules JavaFX (`--module-path lib/javafx --add-modules …`).
+> L'application doit être lancée depuis la racine du projet car elle lit ses
+> données en chemins relatifs (`donnees/…`, `sortie_pgm/…`).
+
+## Lancer l'interface graphique (sans jar)
 
 ```bash
 javac --module-path lib/javafx --add-modules javafx.controls -cp "lib/*" \
