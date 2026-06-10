@@ -39,6 +39,7 @@ public class App extends Application {
 
     private static final String CHEMIN_BASE = "donnees/donnee/reference";
     private static final String CHEMIN_CONNUS = "donnees/donnee/test/connus";
+    private static final String CHEMIN_VISAGE_MOYEN = "sortie_pgm/visageMoyen.pgm";
     private static final int LARGEUR = 92;
     private static final int HAUTEUR = 112;
 
@@ -83,6 +84,7 @@ public class App extends Application {
     private Label lblSeuil2;
     private Label lblSeuil3;
     private LineChart<Number, Number> grapheInertie;
+    private ImageView vueVisageMoyen;
 
     @Override
     public void start(Stage primaryStage) {
@@ -365,9 +367,13 @@ public class App extends Application {
         grapheInertie.setMinWidth(420);
         grapheInertie.setPrefHeight(420);
 
+        vueVisageMoyen = creerVueImage();
+        VBox blocVisageMoyen = creerBlocImage("Visage moyen", vueVisageMoyen);
+        blocVisageMoyen.setAlignment(Pos.TOP_CENTER);
+
         HBox corps = new HBox(30);
         corps.setAlignment(Pos.TOP_LEFT);
-        corps.getChildren().addAll(grille, grapheInertie);
+        corps.getChildren().addAll(grille, grapheInertie, blocVisageMoyen);
         HBox.setHgrow(grapheInertie, Priority.ALWAYS);
 
         page.getChildren().addAll(titre, corps);
@@ -390,6 +396,17 @@ public class App extends Application {
         lblSeuil2.setText(String.format("%.2f", seuil2));
         lblSeuil3.setText(String.format("%.4f", seuil3));
         remplirGrapheInertie();
+        afficherVisageMoyen();
+    }
+
+    /** Charge et affiche le visage moyen (sortie_pgm/visageMoyen.pgm) sur la page ACP. */
+    private void afficherVisageMoyen() {
+        File fichier = new File(CHEMIN_VISAGE_MOYEN);
+        if (!fichier.exists()) {
+            return;
+        }
+        Image visageMoyen = new Image(fichier.getPath());
+        vueVisageMoyen.setImage(convertirMatriceEnImage(visageMoyen.getMatrix(), LARGEUR, HAUTEUR));
     }
 
     /** Trace l'inertie cumulée (%) en fonction du nombre de composantes K, avec un repère à 95%. */
