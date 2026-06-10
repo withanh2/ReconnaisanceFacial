@@ -36,6 +36,12 @@ public class PreTraitement {
 	public PreTraitement(int n) {
 		this(n,n,true);
 	}
+
+	 //------------------------------------------------------------------------------------------------------------
+    //------- GETTER --------------------------------------------------------------------------------------------- 
+    //------------------------------------------------------------------------------------------------------------
+
+
 	
 	/** 
 	 * @author Maxime Le Glanaër
@@ -64,6 +70,14 @@ public class PreTraitement {
 		return(this.estNivGris);
 	}
 
+
+
+	 //------------------------------------------------------------------------------------------------------------
+    //------- FONCTIONS --------------------------------------------------------------------------------------------- 
+    //------------------------------------------------------------------------------------------------------------
+
+
+	
 	/** 
 	 * @author Maxime Le Glanaër
 	 * @param String chemin le chemin vers l'image que l'on doit vérifier
@@ -71,6 +85,7 @@ public class PreTraitement {
 	 * @brief charge une image pour pouvoir la manipuler.
 	 */
 	public static SimpleMatrix chargerImage(String chemin) throws IOException {
+		
 		String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
 		if (ext.equals("pgm")) {
 			return lirePGM(chemin);
