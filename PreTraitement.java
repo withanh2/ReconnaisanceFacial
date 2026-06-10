@@ -85,7 +85,7 @@ public class PreTraitement {
 	 * @brief charge une image pour pouvoir la manipuler.
 	 */
 	public static SimpleMatrix chargerImage(String chemin) throws IOException {
-		
+		// On récupère le suffixe de l'image pour draiter le fichier différemment selon sa nature
 		String ext = chemin.substring(chemin.lastIndexOf('.') + 1).toLowerCase();
 		if (ext.equals("pgm")) {
 			return lirePGM(chemin);
