@@ -168,7 +168,7 @@ public class ACP {
 	 * @author Jules Turchi
 	 * @param taille entier qui correspond à la taille de la matrice
      * @param decomposition  stocke le résultat de la fonction .eig() liste qui associe les valeurs propres aux vecteurs propres
-     * @return double[] qui contient la liste des vecteurs propres
+     * @return double[][] qui contient la liste des vecteurs propres
 	 * @brief Fonction qui récupère la liste des vecteurs propres
 	 */
     public static double[][] recupererVecteurPropre( int taille, SimpleEVD<SimpleMatrix> decomposition){

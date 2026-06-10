@@ -163,9 +163,7 @@ public class Main {
 
     /**
     * @author Jules Turchi et Nathan Havard
-    * @param visages objet Visages contenant la matrice centrée A et la matrice de covariance réduite A^T*A
-    * @brief Constructeur de l'ACP. Calcule les valeurs/vecteurs propres de A^T*A, détermine le nombre
-    * de valeurs propres à garder, en déduit les eigenfaces puis projette la base pour obtenir les signatures (omega).
+    * @brief Fonction test de la reconnaissance faciale qui affiche une interface test dans le terminal
     */
 	public static void reconnaissanceFaciale() {
 		//------- Pré-traitement ---------------------------------------------------------------------------------
@@ -298,9 +296,9 @@ public class Main {
 
     /**
 	 * @author Jules Turchi
-     * @param acp image déjà traitée ie sous forme de vecteur et centrée 
-	 * @param visages tableau contenant les eigenfaces
-     * @return un liste de double qui correspond au seuil
+     * @param acp variable qui stocke le résultat de l'ACP 
+	 * @param visages liste des images
+     * @return un double qui correspond au seuil de décision pour le critère teta
 	 * @brief Fonction qui calcule le seuil avec la méthode 1 du critère teta 
 	*/
     public static double calculSeuilCritereTeta(Visages visages ,ACP acp){
